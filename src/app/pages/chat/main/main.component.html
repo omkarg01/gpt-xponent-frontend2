@@ -1,0 +1,14 @@
+<div #mainWrapper class="main-wrapper">
+    <div class="chat-history-wrapper"><app-chat-history-list></app-chat-history-list></div>
+    <div class="router-outlet-wrapper"><router-outlet></router-outlet></div>
+    <div class="sidebar-wrapper">
+      <p-sidebar
+        [appendTo]="mainWrapper"
+        [blockScroll]="true"
+        [modal]="false"
+        [(visible)]="isChatHistoryVisible"
+      >
+        <app-chat-history-list></app-chat-history-list>
+    </p-sidebar>
+    </div>
+</div>

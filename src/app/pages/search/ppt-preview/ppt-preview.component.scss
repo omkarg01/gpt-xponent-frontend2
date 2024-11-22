@@ -1,0 +1,139 @@
+
+.modal-body{
+    padding: 0px 25px !important;
+}
+.limitTextHeight {
+    max-height: 50px;
+    overflow: hidden;
+}
+
+.content-loader::-webkit-scrollbar {
+    display: none;
+}
+.content-loader {
+    .ppt-content{
+        .child-box{
+            align-items: center;flex: 0 0 32%;flex-direction: column;padding: 8px;row-gap: 8px;
+        }
+    }
+}
+
+.form-container{
+    flex-wrap: nowrap;
+    column-gap: 12px;
+    .container-box1{
+        flex: 0 0 60%;
+    }
+    .container-box2{
+        flex: 0 0 38%;
+    }
+}
+.gallery-img-ppt{
+    width: 100% !important; 
+    display: block;
+    border-radius: 4px;
+}
+.gallery-img-pdf{
+    width: 100% !important; 
+    height: calc(100vh - 75px) !important;
+    display: block;
+    border-radius: 9px;
+    border: 1px solid #ccc;
+}
+.p-galleria-content{
+    align-items: center !important;
+    column-gap: 25px !important;
+}
+
+.p-dialog-header {
+    padding: 6px !important;
+}
+.summary-box{
+    white-space: pre-wrap;line-height: 16px;
+}
+@media all and (min-width: 960px) {
+
+    @media screen and (max-width: 1040px){
+        .gallery-img-ppt{
+            width: 500px !important; 
+        }
+        .gallery-img-pdf{
+            width: 480px !important;
+        }
+    }
+
+    @media screen and (min-width: 1041px) and (max-width: 1188px){
+        .gallery-img-ppt{
+            width: 520px !important; 
+        }
+        .gallery-img-pdf{
+            width: 520px !important;
+        }
+    }
+    @media screen and (min-width: 1189px) and (max-width: 1310px){
+        .gallery-img-ppt{
+            width: 660px !important; 
+        }
+        .gallery-img-pdf{
+            width: 560px !important;
+        }
+    }
+
+    @media screen and (min-width: 1311px) and (max-width: 1480px) {
+        .gallery-img-ppt{
+            width: 730px !important; 
+        }
+        .gallery-img-pdf{
+            width: 530px !important; 
+        }
+    }
+    @media screen and (min-width: 1481px) and (max-width: 1720px){
+        .gallery-img-ppt{
+            width: 850px !important; 
+        }
+        .gallery-img-pdf{
+            width: 700px !important;        
+        }
+    }
+    @media screen and (min-width: 1721px) {
+        .gallery-img-ppt{
+            width: 980px !important; 
+        }
+        .gallery-img-pdf{
+            height: 980px!important;
+        }
+    }
+
+}
+
+@media (max-width: 960px) {
+    .form-container{
+        flex-wrap: wrap;
+        height: auto;
+        row-gap: 20px;
+        .container-box1{
+            flex: 0 0 100%; 
+            margin-top: 15px;
+        }
+        .container-box2{
+            flex: 0 0 100%;
+            height: auto;
+            overflow: hidden;
+        }
+    }
+
+    .summary-box{
+        white-space: pre-wrap;line-height: 22px;
+    }
+}
+
+@media (max-width: 575px) {
+    .content-loader {
+        .ppt-content{
+            .child-box{
+                padding:0px !important;
+                flex: 0 0 100%;
+            }
+        }
+    }
+}

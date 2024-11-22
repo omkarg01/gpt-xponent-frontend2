@@ -1,0 +1,194 @@
+<div [ngClass]="fullpageLoader?'position-box':''" >
+    <p-accordion [multiple]="true" [activeIndex]="[activeTab]" [styleClass]="'metadata-custom-accordion'">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                    <span class="vertical-align-middle mr-2">SharePoint Connector Settings</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <form [formGroup]="adAppdtlForm" novalidate="novalidate">
+                    <div class="d-flex mt-3" style="flex-direction: column;row-gap: 28px;">
+                        <div class="p-fluid grid">
+                            <div class="field col-12">
+                                <span class="p-float-label">
+                                    <input type="text" pInputText class="p-inputtext-sm" formControlName="clientID" >
+                                    <label for="clientID">Client ID</label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-fluid grid">
+                            <div class="field col-12">
+                                <span class="p-float-label">
+                                    <input type="text" pInputText class="p-inputtext-sm" formControlName="tenantID" >
+                                    <label for="tenantID">Tenant ID</label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-fluid grid">
+                            <div class="field col-12">
+                                <span class="p-float-label">
+                                    <p-password formControlName="password" formControlName="clientSecret" [toggleMask]="true"  [feedback]="false"></p-password>
+                                    <label for="clientSecret">Client Secret</label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center mt-3" >
+                        <button pButton type="submit" class="p-button-sm p-button-xs"  [disabled]="adAppdtlForm.invalid || (isLoading$ | async)"  (click)="saveConnections()">
+                          <ng-container *ngIf="isLoading$ | async">
+                            <span class="indicator-progress" [style.display]="'block'">
+                              &nbsp; Please wait...
+                              <span
+                                class="spinner-border spinner-border-sm align-middle ms-2"
+                              ></span>
+                            </span>
+                          </ng-container>
+                          <ng-container *ngIf="!(isLoading$ | async)">
+                            <span class="indicator-label">Save</span>
+                          </ng-container>
+                        </button>
+                      </div>
+                </form>
+            </ng-template>
+
+        </p-accordionTab>
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                    <span class="vertical-align-middle mr-2">Pipeline Automation Setup</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <div class="d-flex" style="flex-direction: column;">
+
+                    <div class="mt-2">
+                        <form [formGroup]="pipelineForm" novalidate="novalidate">
+                            <div formArrayName="pipelineData" data-repeater-list="kt_docs_repeater_basic">
+                                <div *ngFor="let row of pipelineForm.get('pipelineData').controls; let i = index;let k = 'index+1';"
+                                    [formGroupName]="i" data-repeater-item="" class="form-group row mb-5">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>{{row.value.name}}</div> 
+                                                <div *ngIf="row.value?.logs?.status != null" [ngClass]="row.value?.logs?.status == 1 ?'failedAt':'runAt'">
+                                                    {{(row.value?.logs?.status == 1 ? 'Last execution failed at ' : 'Last execution completed at ')}} {{row.value?.logs?.date | date:'h:mm a, MMM d'}}
+                                                </div>
+                                                <div *ngIf="row.value._id == null" style="cursor: pointer;" title="Delete Pipeline" (click)="deletePipeline(i,row.value._id)">
+                                                    <span class="svg-icon svg-icon-3">
+                                                    <i class="pi pi-trash" style="font-size: 1rem; color: #d9342b"></i>
+                                                    </span>
+                                                </div>
+                                                <div *ngIf="row.value._id != null" style="cursor:pointer" title="Delete Pipeline" >
+                                                    <a placement="left"
+                                                        [ngbPopover]="popContent"
+                                                        [popoverTitle]="popTitle"
+                                                        popoverClass="my-custom-popover-class">
+                                                            <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                                                            <span class="svg-icon svg-icon-3">
+                                                                <i class="pi pi-trash" style="font-size: 1rem; color: #d9342b"></i>
+                                                            </span>
+                                                            <!--end::Svg Icon-->
+                                                    </a>
+                                                    <ng-template #popContent>
+                                                        <div> Are you sure you'd like to proceed with deleting this pipeline?</div>
+                                                        <hr>
+                                                        <div class="d-flex align-items-center py-1" style="justify-content: center;">
+                                                            <p-button (click)="deletePipeline(i,row.value._id)" label="YES" styleClass="p-button-sm p-button-xs p-button-danger me-3"></p-button>
+                                                            <p-button label="NO" styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"></p-button>
+                                                        </div>
+                                                    </ng-template>
+                                                    <ng-template #popTitle><div class="d-flex align-items-center py-1" style="font-weight: 900;">{{'Delete PipeLine' | uppercase}}</div></ng-template>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="mt-2">
+                                                <div class="p-fluid grid mt-1">
+                                                    <label>Pipeline Name</label>
+                                                    <input type="text" pInputText class="p-inputtext-sm" placeholder="Pipeline Name" formControlName="name" >
+                                                    <span *ngIf="pipelineForm.get('pipelineData').at(i).get('name').hasError('required') && pipelineForm.get('pipelineData').at(i).get('name').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+                                                </div>
+                                                <div class="p-fluid grid mt-1">
+                                                    <label>Site</label>
+                                                    <p-autoComplete #siteautocomplete [minLength]="0" [maxlength]="200" [showClear]="true" formControlName="site"
+                                                    [delay]="100" [scrollHeight]="'340px'" [completeOnFocus]="true" [suggestions]="siteKeyword" field="name"
+                                                    (completeMethod)="sitesKeyword($event);siteautocomplete.show()" [forceSelection]="true"
+                                                    (onSelect)="onSiteSelectSearch($event, i)"
+                                                    placeholder="Select Site ...">
+                                                </p-autoComplete>
+                                                <span *ngIf="pipelineForm.get('pipelineData').at(i).get('site').hasError('required') && pipelineForm.get('pipelineData').at(i).get('site').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+                                                </div>
+                                                <div class="p-fluid grid mt-1">
+                                                    <label>Folder</label>
+                                                    <p-autoComplete #folderautocomplete [minLength]="0" [maxlength]="200" [showClear]="true" formControlName="folder"
+                                                    [delay]="100" [scrollHeight]="'340px'" [completeOnFocus]="true" [suggestions]="folderKeyword" field="name"
+                                                    (completeMethod)="foldersKeyword($event, i);folderautocomplete.show()" [forceSelection]="true"
+                                                    (onSelect)="onFolderSelectSearch($event, i)"
+                                                    placeholder="Select a folder or sub-folder ...">
+                                                </p-autoComplete>
+                                                <span *ngIf="pipelineForm.get('pipelineData').at(i).get('folder').hasError('required') && pipelineForm.get('pipelineData').at(i).get('folder').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+
+                                                </div>
+                                                <div class="p-fluid grid mt-1" >
+                                                    <label>Frequency</label>
+                                                    <select class="form-select" formControlName="frequency" (change)="setFlags(i)">
+                                                        <option value="" style="color: #ced4da !important;">Select Frequency</option>
+                                                        <option *ngFor="let frequencyitem of frequency" value="{{frequencyitem.code}}">{{frequencyitem.name}}</option>
+                                                    </select>
+                                                    <span *ngIf="pipelineForm.get('pipelineData').at(i).get('frequency').hasError('required') && pipelineForm.get('pipelineData').at(i).get('frequency').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+                                                </div>
+                                                <div *ngIf="row.value.frequency =='Weekly' " class="p-fluid grid mt-1" >
+                                                    <label>Day</label>
+                                                    <p-selectButton [options]="days" formControlName="day" optionLabel="name" optionValue="code"
+                                                    [styleClass]="'toggledayBox'" (onChange)="setFlags(i)">
+                                                    <ng-template let-item>
+                                                        {{item.name}}
+                                                    </ng-template>
+                                                    </p-selectButton>
+                                                    <span *ngIf="pipelineForm.get('pipelineData').at(i).get('day').hasError('required') && pipelineForm.get('pipelineData').at(i).get('day').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+                                                </div>
+                                                <div *ngIf="row.value.frequency =='Weekly' || row.value.frequency =='Daily'" class="p-fluid grid mt-1 col-md-3" >
+                                                    <label>Time (IST)</label>
+                                                    <input type="time" formControlName="time"  class="form-control form-control-solid mb-2 mb-md-0" (change)="setFlags(i)">
+                                                    <span *ngIf="pipelineForm.get('pipelineData').at(i).get('time').hasError('required') && pipelineForm.get('pipelineData').at(i).get('time').touched" style="color: rgb(214, 47, 47);font-size: 12px;">This field is required</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end">
+                                <button pButton type="submit" class="p-button-sm p-button-xs" icon="pi pi-plus"   (click)="addNewPipeline()">
+                                    <span class="indicator-label">Add New Pipeline</span>
+                                </button>
+                            </div>
+                            <div class="d-flex justify-content-center mt-3" >
+                                <button pButton type="submit" class="p-button-sm p-button-xs" [disabled]="pipelineForm.invalid || (isPipelineLoading$ | async)"  (click)="savePipeline()">
+                                  <ng-container *ngIf="isPipelineLoading$ | async">
+                                    <span class="indicator-progress" [style.display]="'block'">
+                                      &nbsp; Please wait...
+                                      <span
+                                        class="spinner-border spinner-border-sm align-middle ms-2"
+                                      ></span>
+                                    </span>
+                                  </ng-container>
+                                  <ng-container *ngIf="!(isPipelineLoading$ | async)">
+                                    <span class="indicator-label">Save</span>
+                                  </ng-container>
+                                </button>
+                              </div>
+                        </form>
+                    </div>
+                </div>
+            </ng-template>
+
+        </p-accordionTab>
+    </p-accordion>  
+</div>
+<div class="overlaybox" *ngIf="fullpageLoader">
+<span class="spinner-border spinner-border-md align-middle ms-2" style="margin-top: 22%;margin-left: 47% !important;--bs-spinner-width: 4rem;
+--bs-spinner-height: 4rem;"></span>
+</div>
+
+<p-toast></p-toast>

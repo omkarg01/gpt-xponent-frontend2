@@ -1,0 +1,25 @@
+.upload-area{
+  display: table;
+  min-width: 100%;
+  max-width: 100%;
+  font-size: 24px;
+  cursor: pointer;
+}
+.upload-div{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  div{
+    background-color: #9b59b6;
+    color: #fff;
+    border-radius: 40px;
+  }
+}
+
+@media (max-width: 960px) {
+  .upload-div{
+    div{
+      width: 280px;
+    }
+  }
+}

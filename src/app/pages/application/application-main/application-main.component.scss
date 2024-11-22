@@ -1,0 +1,21 @@
+.application-main-wrapper {
+  .router-outlet-wrapper {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    
+    @media (min-width: 1024px) {
+      overflow-y: scroll;
+    }
+  }
+}
+
+:host ::ng-deep {
+  // Override PrimeNG styles
+
+  .breadcrumbs-wrapper {
+    .p-breadcrumb {
+      border: none;
+    }
+  }
+}

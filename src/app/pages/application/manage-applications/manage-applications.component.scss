@@ -1,0 +1,114 @@
+.main-wrapper {
+  .lbl-all-applications {
+    font-size: 16px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .txt-search {
+    padding-left: 2.5rem !important;
+  }
+
+  .output-schema-dialog-main-wrapper {
+    .output-schema-wrapper {
+      display: flex;
+      gap: 30px;
+      flex-direction: column;
+
+      h2 {
+        color: #000;
+        font-size: 21px;
+        font-weight: 600;
+        padding: 0;
+        margin: 0;
+        text-align: center;
+      }
+
+      .output-schema-grid-wrapper {
+        display: grid;
+        gap: 15px 30px;
+        grid-template-columns: max-content min-content min-content;
+        
+        .btn-copy-wrapper {
+          grid-column: 3;
+          grid-row: 8;
+          align-self: center;
+        }
+      }
+
+      .instructions-grid {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 10px 20px;
+      }
+    }
+  }
+
+  .share-link-dialog-main-wrapper {
+    .share-link-dialog-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+}
+
+// REUSEABLE STYLES
+.output-schema-title,
+.output-schema-subtitle {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.output-schema-subtitle {
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.bold-600 {
+  font-weight: 600;
+}
+
+:host ::ng-deep {
+  // Override PrimeNG styles
+
+  .output-schema-dialog-main-wrapper {
+    .p-dialog {
+      max-width: 75%;
+    }
+
+    .p-dialog .p-dialog-header {
+      padding: 0.75rem;
+    }
+
+    .output-schema-tree-wrapper {
+      .p-tree {
+        border: none;
+        padding: 0;
+      }
+    }
+
+    .output-schema-wrapper {
+      .output-schema-grid-wrapper {
+        .btn-copy-wrapper {
+          .p-button {
+            width: 90px;
+          }
+        }
+      }
+    }
+  }
+
+  .share-link-dialog-main-wrapper {
+    .p-dialog {
+      width: 50%;
+      
+      .p-dialog-header {
+        padding: 0.75rem;
+      }
+    }
+
+    .p-disabled, .p-component:disabled {
+      font-weight: bold;
+    }
+  }
+}

@@ -1,0 +1,13 @@
+<div class="application-main-wrapper">
+  <div class="breadcrumbs-wrapper">
+    <p-breadcrumb
+      [model]="breadCrumbItems"
+      [home]="home"
+      (onItemClick)="onBreadcrumbClick($event)"
+    ></p-breadcrumb>
+  </div>
+
+  <div class="router-outlet-wrapper">
+    <router-outlet></router-outlet>
+  </div>
+</div>

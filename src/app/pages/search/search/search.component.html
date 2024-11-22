@@ -1,0 +1,16 @@
+<!-- <div class="d-flex">
+    <span class="p-input-icon-left ml-auto col-md-12 col-sm-12"> 
+        <i class="pi pi-search"></i>
+        <input pInputText type="search" class="form-control light" placeholder="Search feature is coming soon ..." readonly style="font-size: 16px !important;"/>
+    </span>
+</div> -->
+<span class="p-fluid">
+    <p-autoComplete #autocomplete [minLength]="0" [maxlength]="200" [showClear]="true" [(ngModel)]="selectedQuery"
+        [delay]="100" [scrollHeight]="'340px'" [completeOnFocus]="true" [suggestions]="filteredKeyword" field="word"
+        (onFocus)="autocomplete.show()" (completeMethod)="filterKeyword($event)"
+        (onKeyUp)="onKeyUpSearch($event)"
+        (keydown.enter)="autocomplete.hide();"
+        (onSelect)="onSelectSearch()" placeholder="Search ...">
+    </p-autoComplete>
+</span>
+<p-toast></p-toast>

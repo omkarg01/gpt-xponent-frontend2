@@ -1,0 +1,123 @@
+/*=======================================================================
+*            Size: 2.94 kB                                              *
+*            NOTE: Do not exceed 10kB to avoid build failure            *
+=======================================================================*/
+
+.main-wrapper {
+  .application-form-wrapper {
+    .scrollable-area {
+      // subtract height of header, breadcrumb, heading and button
+      max-height: calc(100vh - 60px - 60px - 40px);
+      margin: 15px 0 0 0;
+      overflow-y: scroll;
+      position: relative;
+
+      .application-label-input-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: 15px 0 0 0;
+  
+        @media (min-width: 1024px) {
+          margin: 0;
+        }
+  
+        p {
+          font-size: 16px;
+          font-weight: 600;
+          margin: 0;
+        }
+      }
+
+      .pipeline-accordions-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin: 15px 0 0 0;
+  
+        .pipeline-accordion-wrapper {
+          position: relative;
+  
+          .pipeline-controls-wrapper {
+            .frequency-dd-wrapper {
+              margin: 20px 0 0 0;
+            }
+  
+            .input-sites-folders-wrapper {
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+              margin: 10px 0 0 0;
+  
+              .site-folder-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 15px;
+                
+                @media (min-width: 1024px) {
+                  flex-direction: row;
+                  align-items: center;
+                }
+
+                i {
+                  @media (min-width: 1024px) {
+                    transform: translateY(75%);
+                  }
+                }
+  
+                .site-dropdown-wrapper {
+                  display: flex;
+                  flex: 1;
+                  flex-direction: column;
+                  gap: 10px;
+
+                  span {
+                    font-size: 15px;
+                    font-weight: 600;
+                  }
+                }
+              }
+  
+              .folder-trash-dropdown-wrapper {
+                display: flex;
+                flex: 3;
+                flex-direction: column;
+                gap: 10px;
+  
+                .folder-trash-wrapper {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+
+                  span {
+                    font-size: 15px;
+                    font-weight: 600;
+                  }
+                }
+              }
+            }
+
+            .btn-add-site-wrapper {
+              margin: 15px 0 0 0;
+            }
+  
+            .pipeline-name-input-wrapper,
+            .input-data-source-dd-wrapper,
+            .file-format-dd-wrapper,
+            .additional-information-input-wrapper,
+            .frequency-dd-wrapper {
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+  
+              span {
+                font-size: 15px;
+                font-weight: 600;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

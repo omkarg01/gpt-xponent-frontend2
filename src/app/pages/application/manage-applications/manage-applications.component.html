@@ -1,0 +1,351 @@
+<div class="main-wrapper">
+  <div
+    class="p-3"
+    style="padding-top: 0 !important;"
+  >
+      <div
+        class="d-flex align-items-center justify-content-between"
+        style="padding: 0 15px 15px 15px;"
+      >
+        <label style="font-size: 16px;font-weight: 700;white-space: nowrap;">All Applications</label>
+        <div class="d-flex justify-content-around col-md-6 col-sm-12" style="flex-wrap: wrap;row-gap: 10px;">
+          <span class="p-input-icon-left ml-auto col-md-8 col-sm-12">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              class="p-inputtext-sm form-control txt-search"
+              (keypress)="searchItem($event)"
+              (keyup)="searchItem($event); dt1.filterGlobal(serachStr, 'contains')"
+              placeholder="Search here ..."
+            />
+          </span>
+          <p-button
+            label="Create New Application"
+            styleClass="p-button-sm p-button-xs"
+            icon="pi pi-plus"
+            (click)="createNew()"
+          ></p-button>
+        </div>
+      </div>
+
+    <p-progressBar
+      *ngIf="loading"
+      mode="indeterminate"
+      [style]="{ height: '6px' }"
+    ></p-progressBar>
+    <p-table
+      #dt1
+      [value]="applicationsData"
+      [paginator]="true"
+      [rows]="tableRows"
+      [showCurrentPageReport]="true"
+      [tableStyle]="{ 'min-width': '50rem' }"
+      [styleClass]="'p-datatable-sm'"
+      [globalFilterFields]="['application_name', 'created_at', 'created_by', 'modified_at', 'modified_by']"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    >
+      <ng-template pTemplate="header">
+        <tr class="rowbox-wrap">
+          <th
+            pFrozenColumn
+            pSortableColumn="application_name"
+            alignFrozen="left"
+            [frozen]="true"
+          >
+            Application Name
+            <p-sortIcon field="application_name" />
+          </th>
+          <th
+            pSortableColumn="created_at"
+          >
+            Created At
+            <p-sortIcon field="created_at" />
+          </th>
+          <th
+            pSortableColumn="created_by"
+          >
+            Created By
+            <p-sortIcon field="created_by" />
+          </th>
+          <th
+            pSortableColumn="modified_at"
+          >
+            Modified At
+            <p-sortIcon field="modified_at" />
+          </th>
+          <th
+            pSortableColumn="modified_by"
+          >
+            Modified By
+            <p-sortIcon field="modified_by" />
+          </th>
+          <th>Actions</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-app>
+        <tr class="rowbox-wrap">
+          <td
+            alignFrozen="left"
+            pFrozenColumn
+            [frozen]="true"
+            class="minimize-text"
+            [title]="app?.application_name || '—'"
+          >
+            <div class="d-flex">
+              <div>&nbsp;{{ app?.application_name || '—'}}</div>
+            </div>
+          </td>
+          <td>{{ (app?.created_at | date:'d, MMM YYYY h:mm a') || '—' }}</td>
+          <td
+            class="minimize-text"
+            [title]="app?.created_by || '—'"
+          >
+            {{ app?.created_by || '—'}}
+          </td>
+          <td>{{ (app?.modified_at | date:'d, MMM YYYY h:mm a') || '—'}}</td>
+          <td
+            class="minimize-text"
+            [title]="app?.modified_by || '—'"
+          >
+            {{ app?.modified_by || '—'}}
+          </td>
+          <td>
+            <div class="d-flex align-items-center" style="column-gap: 15px;">
+              <div
+                style="cursor:pointer"
+                (click)="edit(app?.application_id)"
+              >
+                <a>
+                  <i
+                    class="pi pi-pencil"
+                    style="font-size: 1rem; color: #e0ac0f"
+                  ></i>
+                </a>
+              </div>
+              <i
+                class="pi pi-align-justify"
+                style="color: #7C3AED; cursor: pointer; font-size: 1rem;"
+                (click)="openOutputSchema(app?.application_id)"
+              ></i>
+              <i
+                class="pi pi-share-alt"
+                style="cursor: pointer; font-size: 1rem;"
+                (click)="openShareLinkDialog(app?.output_api)"
+              ></i>
+              <div style="cursor:pointer">
+                <a placement="left" [ngbPopover]="popContent" [popoverTitle]="popTitle"
+                  popoverClass="my-custom-popover-class">
+                  <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                  <span class="svg-icon svg-icon-3">
+                    <i class="pi pi-trash" style="font-size: 1rem; color: #d9342b"></i>
+                  </span>
+                  <!--end::Svg Icon-->
+                </a>
+                <ng-template #popContent>
+                  <div>If you <b>delete</b>, the application will be deleted permanently, and you will lose the data.</div>
+                  <div> Do you wish to continue?</div>
+                  <hr>
+                  <div class="d-flex align-items-center py-1" style="justify-content: center;">
+                    <p-button
+                      label="YES"
+                      styleClass="p-button-sm p-button-xs p-button-danger me-3"
+                      (click)="deleteApplication(app?.application_id)"
+                    ></p-button>
+                    <p-button label="NO"
+                      styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"></p-button>
+                  </div>
+                </ng-template>
+                <ng-template #popTitle>
+                  <div class="d-flex align-items-center py-1" style="font-weight: 900;">{{'Delete Application' | uppercase}}
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4">No records found</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Output Schema Dialog -->
+  <div class="output-schema-dialog-main-wrapper">
+    <p-dialog
+      header=""
+      [(visible)]="isOutputSchemaDialogVisible"
+      [appendTo]="outputSchemaDialog"
+      [dismissableMask]="true"
+      [draggable]="false"
+      [modal]="true"
+      (onHide)="onOutputSchemaHide()"
+    >
+      <div class="output-schema-wrapper">
+        <h2>Output Schema</h2>
+        <div class="output-schema-grid-wrapper">
+          <span class="output-schema-title">AIXponent Workspace ID:</span>
+          <span class="output-schema-subtitle">
+            {{ outputSchemaData?.workspace_id || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Application ID:</span>
+          <span class="output-schema-subtitle">
+            {{ outputSchemaData?.application_id || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Application Name:</span>
+          <span class="output-schema-subtitle">
+            {{ outputSchemaData?.application_name || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Created At:</span>
+          <span class="output-schema-subtitle">
+            {{ (outputSchemaData?.created_at | date:'d, MMM YYYY h:mm a') || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Created By:</span>
+          <span class="output-schema-subtitle">
+            {{ outputSchemaData?.created_by || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Modified At:</span>
+          <span class="output-schema-subtitle">
+            {{ (outputSchemaData?.modified_at | date:'d, MMM YYYY h:mm a') || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Modified By:</span>
+          <span class="output-schema-subtitle">
+            {{ outputSchemaData?.modified_by || '—' }}
+          </span>
+          <span>&nbsp;</span>
+          
+          <span class="output-schema-title">Output API Endpoint:</span>
+          <span class="output-schema-subtitle">
+            <a
+              *ngIf="outputSchemaData?.output_api; else noOutputApi"
+              [href]="outputSchemaData?.output_api || '—'"
+              target="_blank"
+              >
+              {{ outputSchemaData?.output_api || '—' }}
+            </a>
+            
+            <ng-template #noOutputApi>
+              {{ '—' }}
+            </ng-template>
+          </span>
+          
+          <span
+            *ngIf="outputSchemaData?.output_api"
+            class="btn-copy-wrapper"
+          >
+            <p-button
+              [label]="btnCopyText"
+              styleClass="p-button-sm p-button-xs"
+              [icon]="btnCopyIconName"
+              (onClick)="showCopiedMessage()"
+              [cdkCopyToClipboard]="outputFileUrl"
+            ></p-button>
+          </span>
+
+        </div>
+        <div class="output-schema-tree-wrapper">
+          <p-tree [value]="outputSchemaData?.pipelines || []">
+            <ng-template let-node pTemplate="pipeline">
+              Pipeline {{ node?.count || '—' }}:
+              <span class="bold-600">
+                {{ node?.label || '—' }}
+              </span>
+            </ng-template>
+            <ng-template let-node pTemplate="timestamp">
+              {{ node?.label || '—' }}:
+              <span class="bold-600">
+                {{ (node?.value | date:'d, MMM YYYY h:mm a') || '—' }}
+              </span>
+            </ng-template>
+            <ng-template let-node pTemplate="user">
+              {{ node?.label || '—' }}:
+              <span class="bold-600">
+                {{ node?.value || '—' }}
+              </span>
+            </ng-template>
+            <ng-template let-node pTemplate="folder">
+              {{ node?.label || '—' }}
+            </ng-template>
+            <ng-template let-node pTemplate="file">
+              {{ node?.name || '—' }}
+            </ng-template>
+            <ng-template let-node pTemplate="instruction">
+              <div
+                class="instructions-grid"
+              >
+                <span>Instruction Title:</span>
+                <span class="bold-600">
+                  {{ node?.instruction_key || '—' }}
+                </span>
+                <span>Instruction Description:</span>
+                <span class="bold-600">
+                  {{ node?.instruction_description || '—' }}
+                </span>
+                <span>Instruction Result:</span>
+                <span class="bold-600">
+                  {{ node?.instruction_result || '—' }}
+                </span>
+              </div>
+            </ng-template>
+            <ng-template let-node pTemplate="default">
+              <span class="bold-600">
+                {{ node?.label || '—' }}
+              </span>
+            </ng-template>
+          </p-tree>
+        </div>
+      </div>
+    </p-dialog>
+    <div #outputSchemaDialog></div>
+  </div>
+
+  <!-- Share Link Dialog -->
+  <div class="share-link-dialog-main-wrapper">
+    <p-dialog
+      [(visible)]="isShareLinkDialogVisible"
+      [appendTo]="shareLinkDialog"
+      [dismissableMask]="true"
+      [draggable]="false"
+      [modal]="true"
+      (onHide)="onHideShareLinkDialog()"
+    >
+      <div class="share-link-dialog-wrapper">
+        <span class="output-schema-title">
+          Output File URL
+        </span>
+        
+        <input
+          type="text"
+          pInputText
+          [disabled]="true"
+          [(ngModel)]="outputFileUrl"
+        />
+
+        <p-button
+          [label]="btnCopyText"
+          styleClass="p-button-sm p-button-xs"
+          [icon]="btnCopyIconName"
+          (onClick)="showCopiedMessage()"
+          [cdkCopyToClipboard]="outputFileUrl"
+        ></p-button>
+      </div>
+    </p-dialog>
+    <div #shareLinkDialog></div>
+  </div>
+</div>
+<p-toast></p-toast>

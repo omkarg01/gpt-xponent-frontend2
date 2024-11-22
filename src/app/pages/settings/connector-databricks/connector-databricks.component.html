@@ -1,0 +1,98 @@
+<form [formGroup]="settingsForm" novalidate="novalidate">
+    <p-progressBar *ngIf="(isLoading$ | async)"  mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+    <p-card>
+        <ng-template pTemplate="content">
+            <div class="d-flex" style="flex-direction: column;row-gap: 20px;">
+                <div class="d-flex" style="column-gap: 20px;flex-wrap: wrap;row-gap: 30px;">
+                    <div class="p-fluid grid col-lg-5">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <input type="text" pInputText class="p-inputtext-sm" formControlName="hostName">
+                                <label for="Host Name">Host Name</label>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="p-fluid grid col-lg-4">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <input type="text" pInputText class="p-inputtext-sm" formControlName="patToken">
+                                <label for="PAT Token">PAT Token</label>
+                            </span>
+                        </div>
+                    </div>
+                    <button pButton type="button" style="justify-content: center;" class="p-button-sm p-button-xs p-button-outlined"
+                        (click)="testConnection()">
+                        <ng-container *ngIf="(isTestConnection$ | async)">
+                            <span class="indicator-progress" [style.display]="'block'">
+                                &nbsp; Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="!(isTestConnection$ | async)">
+                            <span class="indicator-label">
+                                <span class="ml-2 font-bold">Test Connection</span>
+                            </span>
+                        </ng-container>
+                    </button>
+                </div>
+                <div class="d-flex align-items-center mb-10">
+                    <div class="border-bottom border-gray-300 mw-50 w-100"></div>
+                </div>
+                <div class="mt-3">
+                    <div class="d-flex" style="column-gap: 20px;flex-wrap: wrap;row-gap: 30px;">
+                        <div class="p-fluid grid col-lg-3 col-md-4">
+                            <div class="field ">
+                                <span class="p-float-label">
+                                    <p-autoComplete #catalogautocomplete [minLength]="0" [maxlength]="200"
+                                        [showClear]="false" formControlName="catalogName" [delay]="100"
+                                        [scrollHeight]="'340px'" [completeOnFocus]="true"
+                                        [suggestions]="catalogKeywords" field="catalog_name"
+                                        (completeMethod)="catalogKeyword($event);catalogautocomplete.show()"
+                                        (onSelect)="onCatalogSelectSearch($event)"
+                                        [forceSelection]="true" placeholder="Select Catalog Name ...">
+                                    </p-autoComplete>
+                                    <label for="Catalog Name">Catalog Name </label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-fluid grid col-lg-3 col-md-4">
+                            <div class="field ">
+                                <span class="p-float-label">
+                                    <p-dropdown formControlName="schemaName" [options]="this.settingsForm.get('schemaData').value" optionLabel="schema_name" placeholder="Schema Name"></p-dropdown>
+                                    <label for="Schema Name">Schema Name </label>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="p-fluid grid col-lg-3 col-md-4">
+                            <div class="field ">
+                                <span class="p-float-label">
+                                    <p-dropdown formControlName="clusterName" [options]="clusterData" optionLabel="cluster_name" placeholder="Cluster Name"></p-dropdown>
+                                    <label for="Cluster Name">Cluster Name </label>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <button pButton type="button" [disabled]="settingsForm.invalid" style="justify-content: center;padding: 6px 45px 6px 45px !important;" class="p-button-sm p-button-xs"
+            (click)="saveConnection()">
+            <ng-container *ngIf="(isConnecting$ | async)">
+                <span class="indicator-progress" [style.display]="'block'">
+                    &nbsp; Please wait...
+                    <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </ng-container>
+            <ng-container *ngIf="!(isConnecting$ | async)">
+                <span class="indicator-label">
+                    <span class="ml-2 font-bold">Save</span>
+                </span>
+            </ng-container>
+        </button>
+        </ng-template>
+    </p-card>
+</form>
+
+<p-toast></p-toast>

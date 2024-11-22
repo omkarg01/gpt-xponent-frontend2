@@ -1,0 +1,77 @@
+<div>
+    <ng-container >
+        <div class="d-flex justify-content-between" style="padding: 15px;">
+            <div>
+                <span class="p-input-icon-left ml-auto "> 
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" class="p-inputtext-sm form-control" (keypress)="searchItem($event)" (keyup)="searchItem($event); dt1.filterGlobal(serachStr, 'contains')" placeholder="Search here" />
+            </span>
+            </div>
+            <div class="d-flex justify-content-end col-md-6 col-sm-12" style="flex-wrap: wrap;row-gap: 10px;column-gap: 30px;">
+
+            <p-button *ngIf="adactiveUser == null" label="Add New" styleClass="p-button-sm p-button-xs " (click)="add()"></p-button>
+            <p-button *ngIf="adactiveUser != null" label="Import/Sync Active Directory Users" styleClass="p-button-sm p-button-xs" (click)="listADUsers()" ></p-button>
+            </div>
+        </div>
+    </ng-container>
+    <p-progressBar *ngIf="loading"  mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+    <p-table
+    #dt1
+    [value]="userData"
+    [paginator]="true"
+    [rows]="8"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [styleClass]="'p-datatable-sm'"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['displayName', 'created_at']"
+    >
+
+    <ng-template pTemplate="header">
+        <tr class="rowbox-wrap">
+            <th pSortableColumn="displayName" style="width:30%" alignFrozen="left" pFrozenColumn [frozen]="true" >User Name <p-sortIcon field="displayName"></p-sortIcon></th>
+            <th pSortableColumn="created_at" style="width:20%">Created at <p-sortIcon field="created_at"></p-sortIcon></th>
+            <th style="width:6%">Action</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr class="rowbox-wrap">
+            <td alignFrozen="left" pFrozenColumn [frozen]="true" class="minimize-text" title="{{user.displayName}}">
+                {{user.displayName}}
+            </td>
+            <td>{{ getDateFormated(user.created_at) | date:'d, MMM YYYY h:mm a'}}</td>
+            <td>
+                <div class="d-flex justify-content-around align-items-center" style="column-gap: 10px;">
+                <div *ngIf="user.role != 'Administrator'" style="cursor:pointer" (click)="edit(user)"><a ><i class="pi pi-pencil" style="font-size: 1rem; color: #e0ac0f"></i></a></div>
+                <div *ngIf="user.role != 'Administrator'" style="cursor:pointer" >
+                    <a placement="left"
+                        [ngbPopover]="popContent"
+                        [popoverTitle]="popTitle"
+                        popoverClass="my-custom-popover-class">
+                            <!--begin::Svg Icon | path: icons/duotune/general/gen027.svg-->
+                            <span class="svg-icon svg-icon-3">
+                                <i class="pi pi-trash" style="font-size: 1rem; color: #d9342b"></i>
+                            </span>
+                            <!--end::Svg Icon-->
+                    </a>
+                    <ng-template #popContent>
+                        <div> Do you wish to continue delete this user?</div>
+                        <hr>
+                        <div class="d-flex align-items-center py-1" style="justify-content: center;">
+                            <p-button (click)="deleteUser(user?.username)" label="YES" styleClass="p-button-sm p-button-xs p-button-danger me-3"></p-button>
+                            <p-button label="NO" styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"></p-button>
+                        </div>
+                    </ng-template>
+                    <ng-template #popTitle><div class="d-flex align-items-center py-1" style="font-weight: 900;">{{'Delete User' | uppercase}}</div></ng-template>
+                </div>
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="4">No records found.</td>
+        </tr>
+    </ng-template>
+</p-table>
+</div>

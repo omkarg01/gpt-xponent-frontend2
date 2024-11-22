@@ -1,0 +1,47 @@
+:host ::ng-deep {
+  .p-card.p-component {
+    height: calc(100vh - 16vh);
+    padding: 0px !important;
+  }
+}
+
+.upload-area{
+    display: table;
+    min-width: 100%;
+    max-width: 100%;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  .upload-div{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    div{
+      background-color: #9b59b6;
+      color: #fff;
+      border-radius: 40px;
+    }
+  }
+  .rowbox-wrap{
+    white-space: nowrap;
+    font-size: 12px;
+    // background: #fdf8ff !important;
+  }
+  .rowbox-wrap th {
+    padding: 10px;
+  }
+  .caption-box{
+    display: flex;column-gap: 10px;justify-content: end;
+  }
+  
+  @media (max-width: 960px) {
+    .upload-div{
+      div{
+        width: 280px;
+      }
+    }
+    .caption-box{
+      align-items: end;
+      flex-direction: column;
+    }
+  }

@@ -1,0 +1,243 @@
+/*=======================================================================
+*            Size: 6.9 kB                                               *
+*            NOTE: Do not exceed 10kB to avoid build failure            *
+=======================================================================*/
+
+.main-wrapper {
+  .application-form-wrapper {
+    .scrollable-area {
+      .pipeline-accordions-wrapper {
+        .pipeline-accordion-wrapper {
+          .pipeline-accordion-header-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+  
+            .txt-pipeline-count {
+              font-size: 15px;
+              font-weight: 500;
+            }
+
+            .txt-pipeline-name {
+              font-size: 15px;
+              font-weight: 500;
+              color: rgba(0, 0, 0, 0.8);
+            }
+          }
+
+          .pipeline-controls-wrapper {
+            .input-data-source-dd-wrapper {
+              margin: 10px 0 0 0;
+            }
+
+            .file-format-dd-wrapper {
+              margin: 20px 0 0 0;
+            }
+
+            .file-description-input-wrapper {
+              display: flex;
+              flex-direction: column;
+              gap: 10px;
+              margin: 10px 0 0 0;
+
+              .description-wrapper {
+                display: flex;
+                align-items: baseline;
+                gap: 5px;
+
+                .title {
+                  font-size: 15px;
+                  font-weight: 600;
+                }
+
+                .subtitle {
+                  color: rgba(0, 0, 0, 0.5);
+                  font-size: 10px;
+                  font-weight: 600;
+                }
+              }
+            }
+
+            .additional-information-input-wrapper {
+              margin: 10px 0 0 0;
+
+              .txt-file-name-contains {
+                font-size: 13px;
+              }
+            }
+
+            .instructions-main-wrapper {
+              margin: 10px 0 0 0;
+
+              .instruction-heading {
+                font-size: 15px;
+                font-weight: 600;
+              }
+
+              .instructions-wrapper {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                margin: 10px 0 0 0;
+                
+                @media (min-width: 1024px) {
+                  gap: 10px;
+                }
+
+                .instruction-wrapper {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 5px;
+
+                  .instruction-name {
+                    font-size: 15px;
+                    font-weight: 600;
+                  }
+
+                  .inputs-trash-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    
+                    @media (min-width: 1024px) {
+                      flex-direction: row;
+                      align-items: center;
+                    }
+                  }
+                }
+
+                .btn-add-test-instruction-wrapper {
+                  display: flex;
+                  flex-direction: column;
+                  gap: 15px;
+                  margin: 10px 0 0 0;
+                  
+                  @media (min-width: 1024px) {
+                    flex-direction: row;
+                    align-items: center;
+                  }
+                }
+              }
+
+              .testing-validation-accordion-wrapper {
+                margin: 15px 0 0 0;
+
+                .upload-sample-files-wrapper {
+                  background: #FCFBFC;
+                  border: 1px dashed rgba(0, 0, 0, 0.13);
+                  cursor: pointer;
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 15px;
+                  padding: 30px 133px;
+  
+                  span {
+                    font-size: 17px;
+                    font-weight: 600;
+                    max-width: 180px;
+                    text-align: center;
+                  }
+                }
+
+                .uploaded-files-main-wrapper {
+                  margin: 15px 0 0 0;
+
+                  .txt-uploaded-files {
+                    font-size: 13px;
+                    font-weight: 600;
+                  }
+
+                  .uploaded-files-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    margin: 5px 0 0 0;
+
+                    .uploaded-file-wrapper {
+                      background: #FDF8FF;
+                      display: flex;
+                      align-items: center;
+                      justify-content: space-between;
+                      padding: 15px 20px 15px 15px;
+
+                      span {
+                        color: #000;
+                        font-size: 15px;
+                        font-weight: 600;
+                      }
+                    }
+                  }
+                }
+
+                .btn-test-wrapper {
+                  display: flex;
+                  justify-content: center;
+                  margin: 15px 0 0 0;
+                }
+
+                .testing-result-cards-wrapper {
+                  margin: 15px 0 0 0;
+                  font-weight: 500;
+
+                  .instructions-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    .instruction-wrapper {
+                      .title-description-output-wrapper {
+                        display: grid;
+                        gap: 10px 5px;
+                        grid-template-columns: 1fr;
+                        
+                        @media (min-width: 1024px) {
+                          gap: 0 5px;
+                          grid-template-columns: max-content 1fr;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .delete-pipeline-wrapper {
+            display: flex;
+            flex-direction: column;
+
+            .row-one {
+              padding: 4px 8px;
+              border-bottom: 1px solid #F5F8FA;
+
+              h3 {
+                font-size: 16px;
+                font-weight: 900;
+                padding: 0;
+                margin: 0;
+                text-transform: uppercase;
+              }
+            }
+
+            .row-two {
+              padding: 8px;
+
+              p {
+                font-size: 14px;
+                max-width: 275px;
+                white-space: break-spaces;
+              }
+
+              hr {
+                margin: 5px 0;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

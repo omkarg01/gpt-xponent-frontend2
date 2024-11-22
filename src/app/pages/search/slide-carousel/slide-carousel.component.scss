@@ -1,0 +1,164 @@
+
+.carousel-title{
+    font-size: 18px;font-weight: 600;cursor: pointer;text-decoration: none;color:#000
+}
+.carousel-title:hover{
+    color: #7C3AED;
+}
+.carousel-title-count{
+    font-size: 18px;
+}
+.carousel-date{
+    font-size: 12px;font-weight: 650;color:#00000063;white-space: nowrap;
+}
+.carousel .ppt-content::-webkit-scrollbar {
+    display: none;
+}
+.carousel .ppt-content {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.carousel {
+    .btn-arrow{
+        padding: 0px;
+        cursor: pointer;
+        background: none !important;
+        border: none !important;
+    i{
+        display: inline;
+        font-size: 16px;
+        color:#7C3AED;
+        background-color: #000;
+        opacity: .6;
+        border-radius: 20px;
+        padding: 6px;
+    }
+    }
+    .btn-arrow:hover{
+        i{
+            color: #fff !important;
+        }
+    }
+    .btn-arrow:disabled{
+        i{
+            display: none;
+        }
+    }
+    img{
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        width: 230px;
+        height: 130px;
+        border-radius: 18px;
+    }
+    img + span{
+        display: none;
+    }
+    img:hover + span{
+        display: block;
+    } 
+    .box-title{
+        font-size: 16px;
+        font-weight: 600;
+        width: 230px;
+        white-space:nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
+.ppt-content{
+    column-gap: 30px;
+    overflow: auto;
+    cursor: move;
+}
+
+.parent-container-checkbox{
+    .input-group-checkbox{
+        position: relative;
+    }
+
+    input[type=checkbox] {
+        visibility: hidden;
+        position: absolute;
+        height: 22px;
+        width: 22px;
+        opacity: .38;
+        z-index: 9;
+        top: 0%;
+        left: 0%;
+        cursor: pointer;
+        border: 2px solid #7C3AED;
+        background-color: #7C3AED;
+        border-radius: 2px;
+        line-height: 0;
+        outline: 0;
+        padding: 0 !important;
+        vertical-align: text-top;
+        -webkit-appearance: none;
+    }
+    
+    .activated{
+        visibility: visible !important;
+    }
+    
+    input[type=checkbox]:hover {
+        opacity: .5;
+    }
+    
+    input[type=checkbox]:checked {
+    visibility: visible;
+    background-color: #7C3AED;
+    opacity: 1;
+    }
+    
+    input[type=checkbox]:before {
+    content: '';
+    position: absolute;
+    right: 50%;
+    top: 50%;
+    width: 4px;
+    height: 10px;
+    border: solid #FFF;
+    border-width: 0 2px 2px 0;
+    margin: -1px -1px 0 -1px;
+    transform: rotate(45deg) translate(-50%, -50%);
+    z-index: 2;
+    font-size: 14px;
+    }
+}
+
+.parent-container-checkbox:hover{
+    input[type=checkbox]{
+        visibility: visible;
+    }
+}
+
+@media (max-width: 960px) {
+    .carousel-title, .carousel-title-count{
+        font-size: 14px;
+    }   
+    .ppt-content{
+        column-gap: 12px;
+        align-items: start;
+    }
+    .carousel {
+        .btn-arrow{
+            width: 20px;
+            height: 20px;
+            i{
+                font-size: 16px;
+            }
+        }
+        img{
+            width: 160px;
+            height: 90px;
+            border-radius: 18px;
+        }
+        .box-title{
+            font-size: 12px;
+            font-weight: 500;
+            width: 160px;
+        }
+    } 
+
+}

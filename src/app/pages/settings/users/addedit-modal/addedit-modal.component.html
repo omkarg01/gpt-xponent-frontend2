@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between p-3" style="align-items: center;" >
+    <div style="font-size: 16px;font-weight: 600;">
+        Add New User
+    </div>
+    <div class="p-2" style="cursor: pointer;">
+        <div class="p-button-sm p-button-text"  class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+        <i class="pi pi-times"></i>
+        </div>
+    </div>
+</div>
+<div class="d-flex align-items-center mb-10">
+    <div class="border-bottom border-gray-300 mw-50 w-100"></div>
+    <!-- <span class="fw-bold text-gray-400 fs-7 mx-2" style="color: #b5b5c3;font-weight: 500;font-size: .95rem;">OR</span> -->
+    <div class="border-bottom border-gray-300 mw-50 w-100"></div>
+</div>
+
+<div class="modal-body">
+    <form [formGroup]="addEditUserForm" novalidate="novalidate">
+        <div class="d-flex" style="flex-direction: column;row-gap: 14px;padding: 10px 24px 10px 24px;">
+            <div *ngIf="errMsg!=''"><ngb-alert [type]="'danger'" [dismissible]="false" style="padding: 6px !important;margin: 0px;font-size: 14px;text-align: center;">{{ errMsg }}</ngb-alert></div>
+            <div class="d-flex" style="flex-direction: column;">
+                <label>Username</label>
+                <input pInputText type="text" placeholder="Username" class="form-control" [readOnly]="addEditFlag" formControlName="username" />
+            </div>
+            <div class="d-flex" style="flex-direction: column;">
+                <label>Email</label>
+                <input pInputText type="email" placeholder="Email" class="form-control" [readOnly]="addEditFlag" formControlName="email"/>
+            </div>
+            <div class="d-flex" style="flex-direction: column;">
+                <label>Role</label>
+                <select class="form-control" formControlName="role" style="font-size: 14px;color: #495057;">
+                    <option *ngFor="let role of roles" value="{{role.code}}">{{role.name}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex mt-3" style="justify-content: center;">
+            <button pButton type="submit" class="p-button-sm p-button-xs" (click)="addUser()" [disabled]="addEditUserForm.invalid || (isLoading$ | async)" >
+                <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                    &nbsp; Please wait...
+                    <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                </span>
+                </ng-container>
+                <ng-container *ngIf="!(isLoading$ | async)">
+                <span class="indicator-label">{{addEditFlag ? 'Update': 'Save'}}</span>
+                </ng-container>
+            </button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,30 @@
+
+<!-- <div style="width:60%;
+height:300px;border: 1px solid #000;" ><img draggable style=" width:100%;
+                height:100%;
+                object-fit:cover;" src="https://exposmartstoragedev.blob.core.windows.net/slide-data/ppt_thumbnail/Delta Lake Definitive Guide_0.png" ></div> -->
+                
+<div class="d-flex p-4 mb-5" style="flex-direction: column; row-gap: 16px;">
+    <div class="d-flex" style="flex-wrap: wrap;row-gap: 20px;">
+        <div class="d-flex top-bar">
+        <app-search></app-search>
+        <div style="font-size: 12px;font-weight: 600;"><a [routerLink]="'/'" style="cursor: pointer;text-decoration: none;color:#7C3AED">Main page </a> > {{topicName | titlecase}}</div>
+        </div>
+    </div>
+    
+    <div><label class="carousel-title">{{topicName | titlecase}}</label></div>
+    <div class="content-loader d-flex" style="flex-direction: column;" >
+        <app-ppt-search-list [data]="listData" [rowCount]="5"></app-ppt-search-list>
+        <div *ngIf="loadingNext" class="d-flex ppt-content" style="flex-wrap: wrap;row-gap: 10px;align-items: center;" >
+            <ng-container *ngFor="let ppt of loadingArr; let i = index;">
+                <div class=" justify-content-center child-box flex">
+                    <p-skeleton width="100%" height="60px" borderRadius="16px"></p-skeleton>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div *ngIf="!loadingNext && !noMoreData" class="d-flex" style="align-items: center;justify-content: center;">
+        <p-button label="View More" icon="pi pi-angle-down" styleClass="p-button-sm p-button-xs p-button-rounded p-button-text" (click)="getNext()"></p-button>
+    </div>
+</div>
+

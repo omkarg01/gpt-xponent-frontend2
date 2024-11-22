@@ -1,0 +1,27 @@
+<div>
+    <!-- <p-breadcrumb [model]="items" [home]="{ icon: 'pi pi-home', routerLink: '/dash/file/new' }"></p-breadcrumb> -->
+    <div class="p-5 text-center" *ngIf="!uploadFlag">
+        <label class="upload-area">
+            <div class="upload-div mt-5">
+                <img src="./assets/img/ppt-upload.svg" />
+                <span style="font-size: 20px;">Upload your file here </span>
+                <div class="col-6 p-4 mt-5 mb-5">
+                    <span style="font-weight: 700;font-size: 24px;line-height: 26px;">Choose file</span>
+                    <input #fileForm type="file" hidden accept=".ppt,.pptx,.pdf,.doc,.docx,.png,.jpeg,.jpg,.xlsx,.xls" id="fileID" style="display:none;"
+                        (change)="onFileChange($event)">
+                </div>
+                <span style="font-size: 14px;">Maximum file size allowed is 100MB</span>
+                <span style="font-size: 14px;">Supported formats ppt, pptx, pdf, docx, png, jpeg, jpg, xlsx, xls only</span>
+            </div>
+        </label>
+    </div>
+    <div style="flex: 0 0 50%;display: flex;justify-content: center;align-items: center;" *ngIf="uploadFlag">
+        <div style="padding: 8%;background: #fff;border-radius: 5px;box-shadow: 0 0 5px 2px #ccc;margin-top: 10%;display: flex;flex-direction: column;padding-bottom: 12%;" >
+            <div><span style="position: absolute;"><p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="4" fill="var(--surface-ground)" animationDuration="5s"></p-progressSpinner></span>
+            <span style="position: relative;left: 34px;top: 34px;font-size: 20px;font-weight: 600;color: #7C3AED;">{{progress}}</span>
+            </div>
+            <div style="position: relative;top: 70px;">{{loadingmsg}}</div>
+        </div>
+    </div>
+</div>
+<!-- <p-toast></p-toast> -->

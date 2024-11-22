@@ -1,0 +1,176 @@
+<div>
+    <form  [formGroup]="settingsForm">
+        <p-accordion [multiple]="true" [activeIndex]="[0]" [styleClass]="'metadata-custom-accordion'">
+            <p-accordionTab>
+                <ng-template pTemplate="header">
+                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                        <span class="vertical-align-middle mr-2">Suggested Tags</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div class="mb-3">
+                        <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;">Suggested Tags</label>
+                        <div class="p-fluid ">
+                            <p-chips separator="," formControlName="suggestions" >
+                            </p-chips>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-accordionTab>
+        </p-accordion>     
+        <p-accordion [multiple]="true" [activeIndex]="[0]" [styleClass]="'metadata-custom-accordion'">
+            <p-accordionTab>
+                <ng-template pTemplate="header">
+                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                        <span class="vertical-align-middle mr-2">Breakouts</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div formArrayName="breakouts">
+                        <div *ngFor="let row of settingsForm.get('breakouts').controls; let i = index"
+                            [formGroupName]="i" class="d-flex justify-content-around group-box">
+                            <div class="box1">
+                                <label style="font-weight: 600;font-size: 14px;"
+                                                >Breakout Category Name</label>
+                                
+                                <div class="p-fluid ">
+                                    <input type="text"  pInputText
+                                    placeholder="Breakout Category Name" formControlName="category" maxlength="60">
+                                </div>
+                            </div>
+                            <div class="box2">
+                                <label style="font-weight: 600;font-size: 14px;" for="entity">Breakout Category Keywords
+                                </label>
+                                <div class="p-fluid">
+                                    <p-chips separator="," id="entity" class="p-chip-sm"
+                                                placeholder="Breakout Category Keywords " formControlName="tags"></p-chips>
+                                </div>
+                            </div>
+                            <div class="mt-4 box3" (click)="removeOrClearBreakoutsGrp('breakouts',i)">
+                                <p-button icon="pi pi-trash"
+                                    styleClass="p-button-sm p-button-rounded p-button-danger p-button-text p-button-raised"></p-button>
+                            </div>
+                        </div>
+                        <div class="mt-2 d-flex justify-content-center">
+                            <button pButton type="button" class="p-button-sm p-button-xs p-button-text"
+                                (click)="addNewBreakoutsGrp('breakouts')"><i class="pi pi-plus"></i>&nbsp;Add New Breakout</button>
+                        </div>
+                    </div>
+                </ng-template>
+    
+            </p-accordionTab>
+        </p-accordion> 
+        <p-accordion [multiple]="true" [activeIndex]="[2]" [styleClass]="'metadata-custom-accordion'">
+            <p-accordionTab>
+                <ng-template pTemplate="header">
+                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                        <span class="vertical-align-middle mr-2">NER Settings</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content">
+                    <div formArrayName="ner">
+                        <div *ngFor="let row of settingsForm.get('ner').controls; let i = index"
+                            [formGroupName]="i" class="d-flex justify-content-around group-box">
+                            <div class="box1">
+                                <label style="font-weight: 600;font-size: 14px;"
+                                                >NER Category Name</label>
+                                
+                                <div class="p-fluid ">
+                                    <input type="text"  pInputText
+                                    placeholder="NER Category Name" formControlName="category" maxlength="60">
+                                </div>
+                            </div>
+                            <div class="box2">
+                                <label style="font-weight: 600;font-size: 14px;" for="entity">NER Category Keywords
+                                </label>
+                                <div class="p-fluid">
+                                    <p-chips separator="," id="entity" class="p-chip-sm"
+                                                placeholder="NER Category Keywords " formControlName="entities"></p-chips>
+                                </div>
+                            </div>
+                            <div class="mt-4 box3" (click)="removeOrClearBreakoutsGrp('ner',i)">
+                                <p-button icon="pi pi-trash"
+                                    styleClass="p-button-sm p-button-rounded p-button-danger p-button-text p-button-raised"></p-button>
+                            </div>
+                        </div>
+                        <div class="mt-2 d-flex justify-content-center">
+                            <button pButton type="button" class="p-button-sm p-button-xs p-button-text"
+                                (click)="addNewNERGrp('ner')"><i class="pi pi-plus"></i>&nbsp;Add New NER</button>
+                        </div>
+                    </div>
+                </ng-template>
+    
+            </p-accordionTab>
+        </p-accordion>  
+    
+            <div class="mt-3 d-flex justify-content-center">
+                <button pButton type="button" class="p-button-sm p-button-xs"
+                    (click)="saveSettings()">Save Settings</button>
+            </div>
+    </form>
+    
+        <!-- <p-accordion [multiple]="true" [activeIndex]="[0]" [styleClass]="'metadata-custom-accordion'">    
+            <p-accordionTab>
+                <ng-template pTemplate="header">
+                    <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                        <span class="vertical-align-middle mr-2">Master Dictionary</span>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="content" >
+                    <form class="form-row d-flex justify-content-between mt-3 mb-3" [formGroup]="dictionaryForm">
+                    <div formArrayName="ppt_dictionary"  class="d-flex" style="flex-direction: column; row-gap: 10px;width:90%">
+                        <div *ngFor="let row of dictionaryForm.get('ppt_dictionary').controls; let i = index"
+                            [formGroupName]="i" class="d-flex justify-content-between group-box">
+                            <div class="p-fluid grid box1">
+                                <div class="field">
+                                    <span class="p-float-label">
+                                        <input type="text" id="word" pInputText placeholder="Word"
+                                            formControlName="word" maxlength="60">
+                                        <label style="font-weight: 600;font-size: 14px;"
+                                            for="word">Word</label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="p-fluid grid box2">
+                                <div class="field">
+                                    <span class="p-float-label">
+                                        <p-chips separator="," id="synonym" class="p-chip-sm"
+                                            placeholder="Synonym " formControlName="label"></p-chips>
+                                        <label style="font-weight: 600;font-size: 14px;"
+                                            for="synonym">Synonym </label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="box3" (click)="removeOrClearGrp('ppt_dictionary',i)">
+                                <p-button icon="pi pi-trash"
+                                    styleClass="p-button-sm p-button-xs p-button-danger p-button-text p-button-raised"></p-button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex" style="flex-direction: column; row-gap: 10px;">
+                        <button pButton type="button" class="p-button-sm p-button-xs"
+                            (click)="addNewGrp('ppt_dictionary')"><i class="pi pi-plus"></i>&nbsp;Add</button>
+                        <div>
+                            <button pButton type="button" class="p-button-sm p-button-xs me-2"
+                                style="padding: 6px 20px !important;" (click)="saveTags()">
+                
+                                <ng-container *ngIf="isLoading$ | async">
+                                    <span class="indicator-progress" [style.display]="'block'">
+                                        Please wait...
+                                        <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                                    </span>
+                                </ng-container>
+                                <ng-container *ngIf="!(isLoading$ | async)">
+                                    <span class="indicator-label"> Save</span>
+                                </ng-container>
+                            </button>
+                        </div>    
+                    </div>
+                    </form>
+                </ng-template>
+    
+            </p-accordionTab>
+        </p-accordion> -->
+    </div>
+    
+    <p-toast></p-toast>

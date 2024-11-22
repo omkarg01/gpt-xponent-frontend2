@@ -1,0 +1,25 @@
+.content-loader {
+    .ppt-content{
+        .child-box{
+            align-items: center;flex: 0 0 20%;flex-direction: column;padding: 8px;row-gap: 8px;
+        }
+    }
+}
+.top-bar{
+    flex-direction: column; row-gap: 6px;flex: 0 0 40%;
+}
+@media (max-width: 960px) {
+    .top-bar{
+        flex: 0 0 100%;
+    }
+}
+@media (max-width: 575px) {
+    .content-loader {
+        .ppt-content{
+            .child-box{
+                padding:0px !important;
+                flex: 0 0 100%;
+            }
+        }
+    }
+}

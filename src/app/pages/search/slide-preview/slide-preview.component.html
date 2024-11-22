@@ -1,0 +1,55 @@
+
+<div class="d-flex justify-content-between align-items-center">
+    <div >&nbsp;</div>
+    <div class="p-2" style="cursor: pointer;">
+        <div class="p-button-sm p-button-text" class="close" aria-label="Close"
+            (click)="activeModal.dismiss('Cross click')">
+            <i class="pi pi-times"></i>
+        </div>
+    </div>
+</div>
+<div class="modal-body">    
+    <div class="d-flex" style="flex-direction: column;row-gap: 6px;">
+        <div style="font-size: 16px;font-weight: 500;">{{data?.chunk_title}}</div>
+        <div class="d-flex justify-content-between">
+            <label *ngIf="data?.match_score != undefined" style="font-size: 14px;font-weight: 600;"
+            [style.color]="data?.match_score >= 70 ? '#34C731':''">{{ data?.match_score +"% match"}}</label>
+            <div><span class="slide-date">{{data?.modified_on | date:'d MMM, YYYY'}}</span></div>
+        </div>
+    </div>
+    <div class="d-flex mt-2" style="flex-direction: column;row-gap: 20px;">
+        <div class="d-flex justify-content-center">
+            <img [src]=" data?.image_path | safe: 'url'" class="img-fluid img-box" [ngClass]="data?.file_type =='pdf' ? 'img-box-pdf':''"> 
+        </div>
+        <div class="d-flex justify-content-end mb-3" style="column-gap: 20px;">
+            <!-- <div pButton type="button" class="p-button-sm p-button-xs " style="padding: 6px 20px !important;" (click)="downloadSlide()">
+                <i class="pi pi-download"></i> &nbsp;&nbsp;&nbsp;Download
+            </div> -->
+            <div pButton type="button" class="p-button-sm p-button-xs p-button-outlined" style="padding: 6px 20px !important;" (click)="pptpreview(data?._id)">
+                View Full Content
+            </div>
+        </div>
+        <div *ngIf="relevanceSlideList.length > 0">
+            <label style="font-size: 20px;font-weight: 600;color: #0d1216">More content like this</label>
+            <div class="content-loader d-flex mt-4 mb-4" style="flex-direction: column;" >
+                <app-slide-list *ngIf="!loadingNext" [data]="relevanceSlideList" [category]="category" [rowCount]="3" ></app-slide-list>
+                <div *ngIf="loadingNext" class="d-flex ppt-content" style="flex-wrap: wrap;row-gap: 10px;align-items: center;" >
+                    <ng-container *ngFor="let ppt of loadingArr; let i = index;">
+                        <div class=" justify-content-center child-box flex">
+                            <p-skeleton width="100%" height="60px" borderRadius="16px"></p-skeleton>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="Download started" [(visible)]="visibleDialog" [position]="'top'">
+    <span class="indicator-progress" [style.display]="'block'">
+        &nbsp; Your download will begin shortly..
+        <span
+          class="spinner-border spinner-border-md align-middle ms-2"
+        ></span>
+      </span>
+</p-dialog>

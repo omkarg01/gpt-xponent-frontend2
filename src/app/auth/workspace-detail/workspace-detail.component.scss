@@ -1,0 +1,29 @@
+.box1{
+    width: 100%;
+    .img-box{
+        width: 24%;
+    }
+}
+.box2{
+    width: 80%;
+}
+
+.loader-overlay{
+    min-height: 100vh;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100vw;
+}
+
+@media (max-width: 960px) {
+    .box1{
+        .img-box{
+            width: 80%;
+        }
+    }
+    .box2{
+        width: 100%;
+    }
+}

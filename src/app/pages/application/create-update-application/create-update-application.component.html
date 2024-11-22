@@ -1,0 +1,472 @@
+<div class="main-wrapper">
+  <form
+    class="application-form-wrapper"
+    [formGroup]="applicationForm"
+    (ngSubmit)="submitApplicationForm(applicationForm)"
+  >
+    <div class="title-button-wrapper">
+      <h1>{{ pageTitle }}</h1>
+      <button
+        [disabled]="applicationForm.invalid || isSaveUpdateApplicationBtnDisabled"
+        [ngClass]="
+          (applicationForm.invalid || isSaveUpdateApplicationBtnDisabled) ? 'btn-disabled' : ''
+        "
+      >
+        {{ buttonName }}
+      </button>
+    </div>
+
+    <div class="scrollable-area">
+      <div class="application-label-input-wrapper">
+        <p>Application Name</p>
+        <input
+          pInputText
+          type="text"
+          formControlName="applicationName"
+          placeholder="Write application name"
+        />
+      </div>
+  
+      <div
+        class="pipeline-accordions-wrapper"
+        formArrayName="pipelines"
+      >
+        <div
+          class="pipeline-accordion-wrapper"
+          *ngFor="let pipeline of pipelinesGetter?.controls; let i = index"
+          [formGroupName]="i"
+        >
+          <p-accordion class="w-full">
+            <p-accordionTab>
+              <ng-template pTemplate="header">
+                <div class="pipeline-accordion-header-wrapper">
+                  <span class="txt-pipeline-count">Pipeline {{ i + 1 }}</span>
+                  <span class="txt-pipeline-name">
+                    {{ this.pipelinesGetter.at(i).get('pipelineName')?.value }}
+                  </span>
+                  <i class="pi pi-trash trash-icon" (click)="op.toggle($event); confirmDeletePipeline($event)"></i>
+                </div>
+              </ng-template>
+              <p-overlayPanel #op [appendTo]="myDiv">
+                <div class="row-one">
+                  <h3>Delete Pipeline</h3>
+                </div>
+                <div class="row-two">
+                  <p>Are you sure you'd like to proceed with deleting this pipeline?</p>
+                  <hr />
+                  <div class="d-flex align-items-center py-1" style="justify-content: center;">
+                    <p-button
+                      label="YES"
+                      styleClass="p-button-sm p-button-xs p-button-danger me-3"
+                      (onClick)="deletePipeline(i)"
+                    ></p-button>
+                    <p-button
+                      label="NO"
+                      styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"
+                      (onClick)="op.toggle($event)"
+                    ></p-button>
+                </div>
+                </div>
+              </p-overlayPanel>
+              <div #myDiv class="delete-pipeline-wrapper"></div>
+  
+              <ng-template pTemplate="content">
+                <div class="pipeline-controls-wrapper">
+                  <div class="pipeline-name-input-wrapper">
+                    <span>Pipeline Name</span>
+                    <input
+                      pInputText
+                      type="text"
+                      formControlName="pipelineName"
+                      placeholder="Write pipeline name"
+                    />
+                  </div>
+  
+                  <div class="input-data-source-dd-wrapper">
+                    <span>Data Source</span>
+                    <p-dropdown
+                      [options]="inputDataSources"
+                      optionLabel="displayName"
+                      formControlName="inputDataSource"
+                      placeholder="Select data source"
+                    ></p-dropdown>
+                  </div>
+  
+                  <div
+                    *ngIf="this.pipelinesGetter.at(i).get('inputDataSource')?.value.key === 'sharepoint'"
+                  >
+                    <div
+                      class="input-sites-folders-wrapper"
+                      formArrayName="inputSitesFolders"
+                    >
+                      <div
+                        class="site-folder-wrapper"
+                        *ngFor="let siteFolder of pipeline.get('inputSitesFolders')?.controls; let j = index"
+                        [formGroupName]="j"
+                      >
+                        <div class="site-dropdown-wrapper">
+                          <span>Site {{ j + 1 }}</span>
+                          <p-autoComplete
+                            field="name"
+                            formControlName="inputSite"
+                            placeholder="Select a site"
+                            [dropdown]="true"
+                            [forceSelection]="true"
+                            [suggestions]="filteredInputSites"
+                            (completeMethod)="filterInputSites($event)"
+                            (onSelect)="selectInputSite($event, siteFolder)"
+                          ></p-autoComplete>
+                        </div>
+    
+                        <div class="folder-trash-dropdown-wrapper">
+                          <div class="folder-trash-wrapper">
+                            <span>Folder {{ j + 1 }}</span>
+                          </div>
+                          <div>
+                            <p-autoComplete
+                              field="name"
+                              formControlName="inputFolder"
+                              placeholder="Select a folder"
+                              emptyMessage="No folders found"
+                              [dropdown]="true"
+                              [forceSelection]="true"
+                              [showEmptyMessage]="true"
+                              [suggestions]="filteredInputFolders"
+                              (completeMethod)="filterInputFolders($event)"
+                            ></p-autoComplete>
+                          </div>
+                        </div>
+
+                        <i
+                          class="pi pi-trash trash-icon--big"
+                          (click)="deleteInputSiteFolder(i, j)"
+                        ></i>
+                      </div>
+                    </div>
+
+                    <div class="btn-add-site-wrapper">
+                      <p-button
+                        styleClass="p-button-sm p-button-xs"
+                        label="Add a New Site"
+                        icon="pi pi-plus"
+                        [disabled]="pipeline.get('inputSitesFolders')?.value?.length >= 3"
+                        (onClick)="addNewInputSiteFolder(i)"
+                      ></p-button>
+                    </div>
+                  </div>
+
+                  <div class="file-format-dd-wrapper">
+                    <span>File Format</span>
+                    <p-multiSelect
+                      [options]="inputFileFormats"
+                      [filter]="false"
+                      defaultLabel="Select file format"
+                      formControlName="inputFileFormats"
+                      optionLabel="displayName"
+                      display="chip"
+                    ></p-multiSelect>
+                  </div>
+
+                  <div class="file-description-input-wrapper">
+                    <div class="description-wrapper">
+                      <span class="title">File Description</span>
+                      <span class="subtitle">(Optional)</span>
+                    </div>
+                    <input
+                      pInputText
+                      type="text"
+                      formControlName="fileDescription"
+                      placeholder="Please specify type of file (e.g., conversations, agreements, proposals etc.)"
+                      (keyup)="onFileDescriptionKeyUp($event, i)"
+                    />
+                  </div>
+
+                  <div
+                    class="additional-information-input-wrapper"
+                    *ngIf="this.pipelinesGetter.at(i).get('fileDescription')?.value"
+                  >
+                    <span>*Please Provide Additional Information</span>
+                    <span class="txt-file-name-contains">File Name Contains</span>
+                    <p-chips
+                      formControlName="additionalInformation"
+                      placeholder="Please provide additional information to filter files based on the provided description (e.g. File Name contains Customer_Support_Calls)"
+                      [addOnBlur]="true"
+                      [addOnTab]="true"
+                    ></p-chips>
+                  </div>
+
+                  <div class="instructions-main-wrapper">
+                    <span class="instruction-heading">Instruction</span>
+                    <div
+                      class="instructions-wrapper"
+                      formArrayName="instructions"
+                    >
+                      <div
+                        class="instruction-wrapper"
+                        *ngFor="let siteFolder of pipeline.get('instructions')?.controls; let k = index"
+                        [formGroupName]="k"
+                      >
+                        <span class="instruction-name">Instruction {{ k + 1 }}</span>
+                        <div class="inputs-trash-wrapper">
+                          <input
+                            pInputText
+                            type="text"
+                            style="flex: 1;"
+                            formControlName="title"
+                          />
+                          <input
+                            pInputText
+                            type="text"
+                            style="flex: 3;"
+                            formControlName="description"
+                          />
+                          <i
+                            class="pi pi-trash trash-icon--big"
+                            (click)="deleteInstruction(i, k)"
+                          ></i>
+                        </div>
+                      </div>
+                      <div class="btn-add-test-instruction-wrapper">
+                        <p-button
+                          styleClass="p-button-sm p-button-xs"
+                          label="Add New Instruction"
+                          icon="pi pi-plus"
+                          (onClick)="addNewInstruction(i)"
+                        ></p-button>
+                        <p-button
+                          styleClass="p-button-sm p-button-xs"
+                          label="Click here to test your instructions"
+                          [disabled]="pipelinesGetter.at(i).get('instructions')?.invalid"
+                          *ngIf="!pipeline.get('isPipelineTested')?.value"
+                          (onClick)="testInstructions(i)"
+                        ></p-button>
+                      </div>
+                    </div>
+                    
+                    <div
+                      class="testing-validation-accordion-wrapper"
+                      *ngIf="pipeline.get('isPipelineTested')?.value"
+                    >
+                      <p-accordion class="w-full">
+                        <p-accordionTab header=" Testing and Validation of Instructions">
+                          <div
+                            class="upload-sample-files-wrapper"
+                            (click)="fileInput.click()"
+                          >
+                            <i class="pi pi-cloud-upload" style="font-size: 3rem;"></i>
+                            <span>Upload sample files to test instructions</span>
+                            <input
+                              #fileInput
+                              type="file"
+                              style="display: none;"
+                              accept=".pdf, .docx, .xlsx, .pptx, .wav, .mp3, .mp4"
+                              (change)="onSampleFilesUpload($event, i)"
+                            />
+                          </div>
+                          <div
+                            class="uploaded-files-main-wrapper"
+                            *ngIf="pipeline?.get('uploadedFiles')?.value?.length"
+                          >
+                            <span class="txt-uploaded-files">
+                              Uploaded Files
+                            </span>
+                            <div
+                              class="uploaded-files-wrapper"
+                            >
+                              <div
+                                class="uploaded-file-wrapper"
+                                *ngFor="let file of pipeline?.get('uploadedFiles')?.value; let l = index"
+                              >
+                                <span>{{ file.name }}</span>
+                                <i
+                                  class="pi pi-trash trash-icon"
+                                  (click)="deleteUploadedSampleFile(i, l)"
+                                ></i>
+                              </div>
+                            </div>
+                          </div>
+                          <div
+                            class="btn-test-wrapper"
+                            *ngIf="pipeline?.get('uploadedFiles')?.value?.length"
+                          >
+                            <p-button
+                              styleClass="p-button-sm p-button-xs"
+                              label="Test"
+                              (onClick)="testUploadedFiles(i)"
+                            ></p-button>
+                          </div>
+
+                          <div
+                            class="testing-result-cards-wrapper"
+                            *ngFor="let res of pipeline.get('testResults')?.value; let m = index;"
+                          >
+                            <p-card [header]="res.file_name">
+                              <div class="instructions-wrapper">
+                                <div
+                                  class="instruction-wrapper"
+                                  *ngFor="let ins of res.results; let n = index;"
+                                >
+                                  <span class="txt-instruction">
+                                    Instruction {{ n + 1 }}
+                                  </span>
+                                  <div class="title-description-output-wrapper">
+                                    <span>{{ ins?.title || '—' }}:</span>
+                                    <span>{{ ins?.description || '—' }}</span>
+                                    <span>Output:</span>
+                                    <span>{{ ins?.output || '—' }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                          </p-card>
+                          </div>
+                        </p-accordionTab>
+                      </p-accordion>
+                    </div>
+                  </div>
+
+                  <div class="frequency-dd-wrapper">
+                    <span>Select Frequency</span>
+                    <p-dropdown
+                      [options]="frequencies"
+                      optionLabel="displayName"
+                      formControlName="frequency"
+                      placeholder="Select frequency"
+                      (onChange)="onFrequencyChange($event, i)"
+                    ></p-dropdown>
+                  </div>
+
+                  <div
+                    *ngIf="pipeline.value.frequency.key =='weekly'"
+                    class="p-fluid grid"
+                    style="margin: 30px 0 0 0;"
+                  >
+                    <label>Day</label>
+                    <p-selectButton [options]="days" formControlName="day" optionLabel="name" optionValue="code"
+                    [styleClass]="'toggledayBox'">
+                    <ng-template let-item>
+                        {{item.name}}
+                    </ng-template>
+                    </p-selectButton>
+                  </div>
+
+                  <div
+                    *ngIf="pipeline.value.frequency.key =='weekly' || pipeline.value.frequency.key =='daily'"
+                    style="margin: 30px 0 0 0;"
+                  >
+                    <label>Time (IST)</label>
+                    <input
+                      type="time"
+                      formControlName="time"
+                      class="form-control form-control-solid mb-2 mb-md-0"
+                      style="width: max-content;"
+                    >
+                    <br />
+                  </div>
+                </div>
+              </ng-template>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </div>
+
+      <div class="btn-add-new-pipeline-wrapper">
+        <p-button
+          styleClass="p-button-sm p-button-xs"
+          label="Add a New Pipeline"
+          icon="pi pi-plus"
+          (onClick)="addNewPipeline()"
+        ></p-button>
+      </div>
+
+      <div class="output-format-dd-wrapper">
+        <span>Output Format</span>
+        <p-dropdown
+          appendTo="body"
+          optionLabel="displayName"
+          formControlName="outputFormat"
+          placeholder="Select format"
+          [options]="outputFormats"
+        ></p-dropdown>
+      </div>
+
+      <div class="output-destination-dd-wrapper">
+        <span>Output Destination</span>
+        <p-dropdown
+          appendTo="body"
+          [options]="outputDestinations"
+          optionLabel="displayName"
+          formControlName="outputDestination"
+          placeholder="Select destination"
+        ></p-dropdown>
+      </div>
+
+      <div
+        *ngIf="outputDestinationGetter?.value.key === 'sharepoint'"
+      >
+        <div
+          class="output-sites-folders-wrapper"
+        >
+        <div
+          class="site-folder-wrapper"
+        >
+          <div class="site-dropdown-wrapper">
+            <span>Site</span>
+            <p-autoComplete
+              field="name"
+              formControlName="outputSite"
+              placeholder="Select a site"
+              [dropdown]="true"
+              [forceSelection]="true"
+              [suggestions]="filteredOutputSites"
+              (completeMethod)="filterOutputSites($event)"
+              (onSelect)="selectOutputSite($event)"
+            ></p-autoComplete>
+          </div>
+
+          <div class="folder-trash-dropdown-wrapper">
+            <div class="folder-trash-wrapper">
+              <span>Folder</span>
+            </div>
+            <div>
+              <p-autoComplete
+                field="name"
+                formControlName="outputFolder"
+                placeholder="Select a folder"
+                emptyMessage="No folders found"
+                [dropdown]="true"
+                [forceSelection]="true"
+                [showEmptyMessage]="true"
+                [suggestions]="filteredOutputFolders"
+                (completeMethod)="filterOutputFolders($event)"
+              ></p-autoComplete>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      
+      <div class="overlaybox" *ngIf="fullpageLoader">
+        <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+      </div>
+    </div>
+  </form>
+
+  <!-- Testing Instructions Dialog -->
+  <div class="testing-instructions-dialog-main-wrapper">
+    <p-dialog
+      [appendTo]="myDialog"
+      [draggable]="false"
+      [modal]="true"
+      [showHeader]="false"
+      [(visible)]="isInstructionsTesting"
+    >
+      <div class="testing-instructions-dialog-wrapper">
+        <p-progressSpinner></p-progressSpinner>
+        <span class="txt-please-wait">{{ templateText.create.loader.messageTop }}</span>
+        <span class="txt-couple-of-minutes">{{ templateText.create.loader.messageBottom }}</span>
+      </div>
+    </p-dialog>
+    <div #myDialog></div>
+  </div>
+</div>
+<p-toast></p-toast>

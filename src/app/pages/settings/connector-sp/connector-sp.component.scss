@@ -1,0 +1,25 @@
+.overlaybox{
+    position: relative;
+    z-index: 1;
+    background: #cccc;
+    opacity: 0.6;
+    width: 100%;
+    height: 100vh;
+}
+
+.position-box{
+    position: absolute;
+    width: 77.4%;
+}
+
+.failedAt{
+    color: #8f1111;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.runAt{
+    color: #0080009f;
+    font-size: 16px;
+    font-weight: 600;
+}

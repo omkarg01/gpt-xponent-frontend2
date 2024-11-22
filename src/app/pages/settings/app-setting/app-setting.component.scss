@@ -1,0 +1,12 @@
+.group-box{
+    align-items: center;
+    .box1{
+        flex: 0 0 16%;
+    }
+    .box2{
+        flex: 0 0 70%;
+    }
+    .box3{
+        flex: 0 0 6%;
+    }
+}

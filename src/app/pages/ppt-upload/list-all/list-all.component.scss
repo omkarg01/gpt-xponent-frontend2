@@ -1,0 +1,88 @@
+.list-all-main-wrapper {
+  .heading-search-btn-wrapper {
+    .all-files-showing-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .txt-showing-entries {
+        color: #6c757d;
+        font-size: 14px;
+      }
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.disabled-link {
+  pointer-events: none;
+  opacity: 0.4;
+}
+.rowbox-wrap{
+    white-space: nowrap;
+    font-size: 14px;
+    background: #fdf8ff !important;
+}
+.list-thumbnails{
+    margin-right: 15px !important;
+}
+.gallery-img-ppt{
+    width: 100%; min-height: 310px; 
+}
+.gallery-img-pdf{
+    height: calc(100vh - 155px) !important;border-radius: 9px;max-width: 795px !important;
+}
+.p-dialog-header{
+    padding: 12px !important;
+}
+.preview-parent{
+    flex-wrap: nowrap;
+    .pre-box1{
+        flex: 0 0 90%
+    }
+    .pre-box2{
+        flex: 0 0 10%
+    }
+}
+.display-name{
+    width:30%
+}
+.minimize-text{
+    width: 150px;
+    min-width: 150px;
+    max-width: 100px; 
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+@media (max-width: 960px) {
+.preview-parent{
+    flex-wrap: wrap;
+    .pre-box1{
+        flex: 0 0 100%
+    }
+    .pre-box2{
+        flex: 0 0 100%
+    }
+    }
+    .display-name{
+        width:6%
+    }
+}
+
+:host ::ng-deep {
+  // Override PrimeNG styles
+
+  .list-all-main-wrapper {
+    .p-datatable-table {
+      border-collapse: separate;
+    }
+
+    .p-datatable .p-datatable-tbody > tr > td {
+      padding: 0.75rem;
+    }
+  }
+}

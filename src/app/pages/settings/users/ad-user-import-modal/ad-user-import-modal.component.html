@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-between p-3" style="align-items: center;" >
+    <div style="font-size: 16px;font-weight: 600;">
+        Import/Sync Users from Active Directory
+    </div>
+    <div class="p-2" style="cursor: pointer;">
+        <div class="p-button-sm p-button-text"  class="close" aria-label="Close" (click)="closeModal()">
+            <i class="pi pi-times"></i>
+        </div>
+    </div>
+</div>
+<div class="d-flex align-items-center mb-10">
+    <div class="border-bottom border-gray-300 mw-50 w-100"></div>
+    <!-- <span class="fw-bold text-gray-400 fs-7 mx-2" style="color: #b5b5c3;font-weight: 500;font-size: .95rem;">OR</span> -->
+    <div class="border-bottom border-gray-300 mw-50 w-100"></div>
+</div>
+<div class="modal-body">
+    <p-progressBar *ngIf="loading"  mode="indeterminate" [style]="{ height: '6px' }"></p-progressBar>
+    <div class="d-flex justify-content-between" style="align-items: center;" >
+        <div class="p-2">Total <b>{{totalActiveUserCount}}</b> users found. <b>{{syncUser.length}}</b> users synced. <b>{{(totalActiveUserCount - syncUser.length)}}</b> Unsync users</div>
+        <div class="d-flex" style="column-gap: 10px;">
+            <span class="p-input-icon-left ml-auto "> 
+                <i class="pi pi-search"></i>
+                <input pInputText type="text" class="p-inputtext-sm form-control" (keypress)="searchItem($event)" (keyup)="searchItem($event); dt1.filterGlobal(serachStr, 'contains')" placeholder="Search here" />
+            </span>
+            <button pButton type="submit" class="p-button-sm p-button-xs" style="padding: 6px 40px 6px 40px !important;" (click)="saveADUsers()" [disabled]="userADForm.invalid || (isLoading$ | async)" >
+                <ng-container *ngIf="isLoading$ | async">
+                <span class="indicator-progress" [style.display]="'block'">
+                    &nbsp; Please wait...
+                    <span
+                    class="spinner-border spinner-border-sm align-middle ms-2"
+                    ></span>
+                </span>
+                </ng-container>
+                <ng-container *ngIf="!(isLoading$ | async)">
+                <span class="indicator-label">Sync</span>
+                </ng-container>
+            </button>
+        </div>
+    </div>
+    <p-table
+    #dt1
+    [value]="userADForm.get('group').value"
+    [paginator]="true"
+    [rows]="8"
+    [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }"
+    [styleClass]="'p-datatable-sm'"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [globalFilterFields]="['username','email']"
+    >
+
+    <ng-template pTemplate="header">
+        <tr class="rowbox-wrap">
+            <th style="width:5%" alignFrozen="center" pFrozenColumn [frozen]="true" >
+                <div style="padding-right:10px"
+                class="form-check form-check-sm form-check-custom form-check-solid flex-wrap" title="Select / Unselect All">
+                <input class="form-check-input widget-9-check" type="checkbox" value="" (change)="selectAllUsers($event)"/>
+                </div>
+            </th>
+            <th pSortableColumn="username" style="width:30%" alignFrozen="left" pFrozenColumn [frozen]="true" >User Name <p-sortIcon field="username"></p-sortIcon></th>
+            <th pSortableColumn="email" style="width:30%" alignFrozen="left" pFrozenColumn [frozen]="true" >Email <p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="accountEnabled" style="width:30%" alignFrozen="left" pFrozenColumn [frozen]="true" >Account Status <p-sortIcon field="accountEnabled"></p-sortIcon></th>
+            <th style="width:30%" alignFrozen="left" pFrozenColumn [frozen]="true" >Role</th>
+
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr class="rowbox-wrap">
+            <td alignFrozen="center">
+                <div style="padding-right:10px" class="form-check form-check-sm form-check-custom form-check-solid">
+                    <input class="form-check-input widget-9-check" type="checkbox" [disabled]="getUserToSync(user)" [checked]="user.selected" (change)="selectUser($event, user.email)" />
+                </div>
+            </td>
+            <td alignFrozen="left" pFrozenColumn [frozen]="true" class="minimize-text" title="{{user.username}}">{{user.username}}</td>
+            <td alignFrozen="left" pFrozenColumn [frozen]="true" class="minimize-text" title="{{user.email}}">{{user.email}}</td>
+            <td alignFrozen="left" pFrozenColumn [frozen]="true" class="minimize-text" title="{{user.accountEnabled}}" [ngClass]="user.accountEnabled != null ? (user.accountEnabled == true ? 'enable-status' : 'disable-status') : 'no-status'">{{user.accountEnabled != null ? (user.accountEnabled == true ? "Enabled" : "Disabled") : "Not Found"}}</td>
+            <td alignFrozen="center" >Unassigned</td>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td colspan="5">No records found.</td>
+        </tr>
+    </ng-template>
+</p-table>
+</div>

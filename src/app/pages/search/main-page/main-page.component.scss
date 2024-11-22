@@ -1,0 +1,16 @@
+.parent-container{
+    flex-direction: column; row-gap: 20px;
+}
+
+.top-bar{
+    flex-direction: column; row-gap: 6px;flex: 0 0 40%;
+}
+
+@media (max-width: 960px) {
+    .parent-container{
+        row-gap: 10px;
+    }
+    .top-bar{
+        flex: 0 0 100%;
+    }
+}

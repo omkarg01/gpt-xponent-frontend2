@@ -1,0 +1,75 @@
+<div class="d-flex  mb-5" style="flex-direction: column; row-gap: 16px;">
+    <div class="sticky-top"  style="padding: 10px 20px;background: #fdf8ff;z-index: 77;">
+    <div class="d-flex justify-content-between " style="flex-wrap: wrap;row-gap: 20px;">
+        <div class="d-flex top-bar">
+            <app-search [query]="selectQuery" [type]="tabValue" [vintageView]="vintageViewChecked"></app-search>
+            <div style="font-size: 12px;font-weight: 600;"><a [routerLink]="'/'"
+                    style="cursor: pointer;text-decoration: none;color:#7C3AED">Main page </a> > {{query | titlecase}}
+            </div>
+        </div>
+        <div class="d-flex align-items-end" style="flex-direction: column; row-gap: 15px;" >
+            <p-selectButton [options]="justifyOptions" [(ngModel)]="tabValue" optionLabel="justify" optionValue="type"
+            [styleClass]="'toggleBox'" (onChange)="tabChange()">
+            <ng-template let-item>
+                {{item.justify}}
+            </ng-template>
+            </p-selectButton>
+            <p-toggleButton [styleClass]="'toggleButton'" [(ngModel)]="vintageViewChecked" [onLabel]="'Vintage view'"
+            [offLabel]="'Vintage view'" [onIcon]="'pi pi-clock'" [offIcon]="'pi pi-clock'"
+            [style]="{ width: '9em' }" (onChange)="viewChnage()"></p-toggleButton>
+        </div>
+    </div>
+    <div>
+        <label *ngIf="totalRecord > 0" style="font-size: 18px;font-weight: 600;">{{"Search results for “"}}{{query | titlecase }}{{"” (" +
+            totalRecord+ " items found)" }}</label>
+        <label *ngIf="totalRecord == 0 && !loadingNext" style="font-size: 18px;font-weight: 600;">No results  found for “{{query | titlecase }}”</label>
+    </div>
+    </div>
+    <!--- Default View  -->
+    <div class="d-flex" style="padding: 0px 24px;flex-direction: column; row-gap: 16px;" *ngIf="!vintageViewChecked">
+        <div class="content-loader d-flex" style="flex-direction: column;">
+            <app-ppt-search-list [data]="listData" [rowCount]="5"></app-ppt-search-list>
+            <div *ngIf="loadingNext" class="d-flex ppt-content"
+                style="flex-wrap: wrap;row-gap: 10px;align-items: center;">
+                <ng-container *ngFor="let ppt of loadingArr; let i = index;">
+                    <div class=" justify-content-center child-box flex">
+                        <p-skeleton width="100%" height="60px" borderRadius="16px"></p-skeleton>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+        <div *ngIf="!loadingNext && !noMoreData" class="d-flex" style="align-items: center;justify-content: center;">
+            <p-button label="View More" icon="pi pi-angle-down"
+                styleClass="p-button-sm p-button-xs p-button-rounded p-button-text" (click)="getNext()"></p-button>
+        </div>
+    </div>
+    <!--- Vintage View  -->
+    <div style="padding: 0px 24px;" *ngIf="vintageViewChecked">
+        <p-accordion [multiple]="true" [styleClass]="'custom-accordion'">
+            <ng-container *ngFor="let vintage of vintageListData; let i = index;">
+            <p-accordionTab [header]="vintage?.category" [selected]="true">
+                <div class="content-loader d-flex" style="flex-direction: column;">
+                    <app-ppt-search-list [data]="vintage?.files" [rowCount]="5" [vintageCategory]="vintage?.category"></app-ppt-search-list>
+                    <div *ngIf="vintage?.loadingNext" class="d-flex ppt-content"
+                        style="flex-wrap: wrap;row-gap: 10px;align-items: center;">
+                        <ng-container *ngFor="let ppt of loadingArr; let i = index;">
+                            <div class=" justify-content-center child-box flex">
+                                <p-skeleton width="100%" height="60px" borderRadius="16px"></p-skeleton>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+                <div *ngIf="!vintage?.loadingNext && !vintage?.noMoreData" class="d-flex mt-3" style="align-items: center;justify-content: center;">
+                    <p-button label="View More" icon="pi pi-angle-down"
+                        styleClass="p-button-sm p-button-xs p-button-rounded p-button-text" (click)="getNextVintageList(i)"></p-button>
+                </div>
+            </p-accordionTab>
+            </ng-container>
+            <div *ngIf="loadingNext" class="flex mb-2" >
+                <ng-container *ngFor="let ppt of loadingArr; let i = index;">
+                    <p-skeleton width="100%" height="200px" styleClass="mb-3" borderRadius="16px"></p-skeleton>
+                </ng-container>
+            </div>
+        </p-accordion>
+    </div>
+</div>

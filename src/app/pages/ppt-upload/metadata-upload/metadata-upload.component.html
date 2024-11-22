@@ -1,0 +1,256 @@
+<div class="d-flex form-container align-items-center">
+    <div class="d-flex justify-content-center align-items-start container-box1" [style.flex]="previewBox"
+        [style.display]="previewdisplaybox" >
+        <ng-container *ngIf="!progressFlag">
+        <p-galleria [value]="images" [showItemNavigators]="shownavigator" [showThumbnails]="showthumnails"
+            [thumbnailsPosition]="'bottom'" [responsiveOptions]="responsiveOptions"
+            [containerStyle]="galleriacontainerWidth" [numVisible]="5">
+            <ng-template pTemplate="item" let-item>
+                <img [src]="item.image_path" [ngClass]="metaData?.file_type == 'ppt'? 'gallery-img-ppt' : 'gallery-img-pdf'" class="gallery-img" />
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+                <div class="grid grid-nogutter justify-content-center ">
+                    <img [src]="item.thumbnail_path" />
+                </div>
+            </ng-template>
+        </p-galleria>
+        </ng-container>
+        <div *ngIf="progressFlag" class="d-flex"
+            style="flex-direction: column;align-items: center;justify-content: center; padding: 10%;background: #fff; border-radius: 5px;box-shadow: 0 0 5px 2px #ccc;">
+            <p-progressSpinner></p-progressSpinner>
+            <span style="text-align: center;">A few more seconds...</span>
+        </div>
+    </div>
+    <div class="p-3 container-box2" [style.flex]="formBox">
+        <div class="d-flex justify-content-between">
+            <div style="font-size: 16px;text-align: center;">Content Information</div>
+            <div style="cursor:pointer" *ngIf="isMobilescreen">
+                <a *ngIf="!iswindowfullscreen" (click)="fullScreen(true)"><i class="pi pi-window-maximize"
+                        style="font-weight: 700;color: #7C3AED;"></i></a>
+                <a *ngIf="iswindowfullscreen" (click)="fullScreen(false)"><i class="pi pi-window-minimize"
+                        style="font-weight: 700;color: #7C3AED;"></i></a>
+            </div>
+        </div>
+        <div *ngIf="!progressFlag" class="mb-5">
+            <form class="form-row" [formGroup]="metadataForm">
+                <div class="mt-4 mb-3">
+                    <div class="p-fluid grid">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <input type="text" id="filename" pInputText class="p-inputtext-sm"
+                                    placeholder="File Name" formControlName="display_name">
+                                <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;"
+                                    for="filename">File Name<i class="pi pi-star-fill"
+                                        style="font-size: 5px;color: #d9342b;"></i></label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 mb-3">
+                    <div class="p-fluid grid">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <input type="text" id="title" pInputText class="p-inputtext-sm" placeholder="Title"
+                                    formControlName="file_title">
+                                <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;"
+                                    for="title">Title<i class="pi pi-star-fill"
+                                        style="font-size: 5px;color: #d9342b;"></i></label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 mb-3">
+                    <div class="p-fluid grid">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <textarea rows="7" id="summary" pInputTextarea class="form-control"
+                                    placeholder="Summary" formControlName="file_summary"></textarea>
+                                <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;"
+                                    for="summary">Summary<i class="pi pi-star-fill"
+                                        style="font-size: 5px;color: #d9342b;"></i></label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 mb-3">
+                    <div class="p-fluid grid">
+                        <div class="field">
+                            <span class="p-float-label">
+                                <p-chips formControlName="tags" (onAdd)="callMe($event)" (onRemove)="reSetTags($event.value)">
+                                    <ng-template let-item pTemplate="item?.word"> {{ item?.word }}</ng-template>
+                                </p-chips>
+                                <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;"
+                                    for="tags">Tags<i class="pi pi-star-fill"
+                                        style="font-size: 5px;color: #d9342b;"></i></label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="d-flex mt-2" style="column-gap: 10px;flex-wrap: wrap;row-gap: 10px;">
+                        <label class="d-flex align-items-start" style="font-weight: 600;font-size: 14px;margin-left: 10px;opacity: 0.7;">Suggestions : </label>
+                        <ng-container *ngFor="let row of recommendationList; let i = index">
+                            <div class="p-chips-token recomm-chip" (click)="addTag(row,i)">{{row}}</div>
+                        </ng-container>
+                    </div>
+                </div>
+                <p-accordion [multiple]="true" [activeIndex]="[0]" [styleClass]="'metadata-custom-accordion'">
+                    <p-accordionTab>
+                        <ng-template pTemplate="header">
+                            <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                                <span class="vertical-align-middle mr-2">Entities Found</span>
+                                <i class="pi pi-info-circle"
+                                    title="Below list groups the keywords into a category. For Eg: Product(Entity Type) : Oreo(Entity)"></i>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div formArrayName="file_entities">
+                                <div *ngFor="let row of metadataForm.get('file_entities').controls; let i = index"
+                                    [formGroupName]="i" class="d-flex justify-content-around group-box">
+                                    <div class="mt-4 mb-3 box1">
+                                        <div class="p-fluid grid">
+                                            <div class="field">
+                                                <span class="p-float-label">
+                                                    <input type="text" id="entityType" pInputText
+                                                        placeholder="Entity Type" formControlName="word" maxlength="60">
+                                                    <label style="font-weight: 600;font-size: 14px;"
+                                                        for="entityType">Entity Type</label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 mb-3 box2">
+                                        <div class="p-fluid grid">
+                                            <div class="field">
+                                                <span class="p-float-label">
+                                                    <p-chips separator="," id="entity" class="p-chip-sm"
+                                                        placeholder="Entity " formControlName="label"></p-chips>
+                                                    <label style="font-weight: 600;font-size: 14px;" for="entity">Entity
+                                                    </label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 mb-3 box3" (click)="removeOrClearGrp('file_entities',i)">
+                                        <p-button icon="pi pi-trash"
+                                            styleClass="p-button-sm p-button-rounded p-button-danger p-button-text p-button-raised"></p-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1 d-flex justify-content-end">
+                                <button pButton type="button" class="p-button-sm p-button-xs"
+                                    (click)="addNewGrp('file_entities')"><i class="pi pi-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </ng-template>
+        
+                    </p-accordionTab>
+                    <p-accordionTab>
+                        <ng-template pTemplate="header">
+                            <div class="d-flex justify-content-between align-items-center" style="column-gap: 10px;">
+                                <span class="vertical-align-middle mr-2">Dictionary</span>
+                                <i class="pi pi-info-circle"
+                                    title="Below list is pair a word with a synonym. For Eg: eCDT(word) : E-Commerce Consumer Decision Tree(Synonym)"></i>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div formArrayName="file_dictionary">
+                                <div *ngFor="let row of metadataForm.get('file_dictionary').controls; let i = index"
+                                    [formGroupName]="i" class="d-flex justify-content-between group-box">
+                                    <div class="mt-4 mb-3 box1">
+                                        <div class="p-fluid grid">
+                                            <div class="field">
+                                                <span class="p-float-label">
+                                                    <input type="text" id="word" pInputText placeholder="Word"
+                                                        formControlName="word" maxlength="60">
+                                                    <label style="font-weight: 600;font-size: 14px;"
+                                                        for="word">Word</label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 mb-3 box2">
+                                        <div class="p-fluid grid">
+                                            <div class="field">
+                                                <span class="p-float-label">
+                                                    <p-chips separator="," id="synonym" class="p-chip-sm"
+                                                        placeholder="Synonym " formControlName="label"></p-chips>
+                                                    <label style="font-weight: 600;font-size: 14px;"
+                                                        for="synonym">Synonym </label>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 mb-3 box3" (click)="removeOrClearGrp('file_dictionary',i)">
+                                        <p-button icon="pi pi-trash"
+                                            styleClass="p-button-sm p-button-xs p-button-rounded p-button-danger p-button-text p-button-raised"></p-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-1 d-flex justify-content-end">
+                                <button pButton type="button" class="p-button-sm p-button-xs"
+                                    (click)="addNewGrp('file_dictionary')"><i class="pi pi-plus"></i>&nbsp;Add</button>
+                            </div>
+                        </ng-template>
+        
+                    </p-accordionTab>
+                </p-accordion>
+        
+                <div class="d-flex justify-content-center mt-3">
+                    <!-- <button pButton type="button" class="p-button-sm p-button-xs me-2"  [disabled]="metadataForm.invalid" (click)="saveMetadata()"> -->
+                    <button
+                      pButton
+                      type="button"
+                      class="p-button-sm p-button-xs me-2"
+                      style="padding: 6px 20px !important;"
+                      [disabled]="metadataForm.invalid"
+                      (click)="saveMetadata()"
+                    >        
+                        <ng-container *ngIf="isLoading$ | async">
+                            <span class="indicator-progress" [style.display]="'block'">
+                                Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="!(isLoading$ | async)">
+                            <span class="indicator-label"> Save</span>
+                        </ng-container>
+                    </button>
+                    <!-- <p-button label="Discard" styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"  (click)="delete()"></p-button> -->
+                    <button pButton type="button" class="p-button-sm p-button-xs p-button-outlined p-button-secondary"
+                        style="padding: 6px 20px !important;" *ngIf="formType == 'new'" (click)="delete()">
+        
+                        <ng-container *ngIf="flagdisable | async">
+                            <span class="indicator-progress" [style.display]="'block'">
+                                Please wait...
+                                <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                            </span>
+                        </ng-container>
+                        <ng-container *ngIf="!(flagdisable | async)">
+                            <span class="indicator-label"> Discard</span>
+                        </ng-container>
+                    </button>
+                    <!-- <p-button label="Discard" styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary" *ngIf="formType == 'new'" (click)="delete()"></p-button> -->
+                    <p-button label="Close" styleClass="p-button-sm p-button-xs p-button-outlined p-button-secondary"
+                        *ngIf="formType == 'edit'" (click)="redirectToListing()"></p-button>
+                </div>
+        
+            </form>
+        </div>
+        <div *ngIf="progressFlag" class="mb-3">
+            <p-skeleton height="2rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton height="2rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton width="100%" height="10rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton height="4rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton width="100%" height="6rem" styleClass="mb-3"></p-skeleton>
+            <p-skeleton width="100%" height="6rem" styleClass="mb-3"></p-skeleton>
+        </div>
+    </div>
+</div>
+<p-toast></p-toast>
+<p-confirmDialog #cd [style]="{width: '50vw'}">
+    <ng-template pTemplate="footer">
+        <button type="button" pButton icon="pi pi-times" label="No" (click)="cd.reject()"></button>
+        <button type="button" pButton class="p-button-sm p-button-xs p-button-outlined p-button-secondary"
+            icon="pi pi-check" label="Yes" (click)="cd.accept()"></button>
+    </ng-template>
+</p-confirmDialog>
